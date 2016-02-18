@@ -167,6 +167,10 @@ CXX=g++
 #CXX=arm-linux-g++
 #LINK=arm-linux-gcc
 
+# The Swift port
+WINSWIFTSRC = ../win/swift/winswift.c
+WINSWIFTOBJ = winswift.o
+
 # file for regular expression matching
 REGEXOBJ = posixregex.o
 #REGEXOBJ = pmatchregex.o
@@ -725,6 +729,8 @@ wc_chainout.o: ../win/chain/wc_chainout.c $(HACK_H)
 	$(CC) $(CFLAGS) -c ../win/chain/wc_chainout.c
 wc_trace.o: ../win/chain/wc_trace.c $(HACK_H) ../include/func_tab.h
 	$(CC) $(CFLAGS) -c ../win/chain/wc_trace.c
+winswift.o: ../win/swift/winswift.c $(HACK_H)
+	$(CC) $(CFLAGS) -c ../win/swift/winswift.c
 monstr.o: monstr.c $(CONFIG_H)
 vis_tab.o: vis_tab.c $(CONFIG_H) ../include/vis_tab.h
 allmain.o: allmain.c $(HACK_H)
