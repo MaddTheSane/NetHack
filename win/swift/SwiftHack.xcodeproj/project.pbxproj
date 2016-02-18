@@ -84,7 +84,6 @@
 		5562DD8E1C765C6300F5B60E /* knox.des in Resources */ = {isa = PBXBuildFile; fileRef = 5562D9681C765BF500F5B60E /* knox.des */; };
 		5562DD8F1C765C6300F5B60E /* knox.lev in Resources */ = {isa = PBXBuildFile; fileRef = 5562D9691C765BF500F5B60E /* knox.lev */; };
 		5562DD901C765C6300F5B60E /* license in Resources */ = {isa = PBXBuildFile; fileRef = 5562D96A1C765BF500F5B60E /* license */; };
-		5562DD911C765C6300F5B60E /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 5562D96B1C765BF500F5B60E /* Makefile */; };
 		5562DD921C765C6300F5B60E /* medusa-1.lev in Resources */ = {isa = PBXBuildFile; fileRef = 5562D96C1C765BF500F5B60E /* medusa-1.lev */; };
 		5562DD931C765C6300F5B60E /* medusa-2.lev in Resources */ = {isa = PBXBuildFile; fileRef = 5562D96D1C765BF500F5B60E /* medusa-2.lev */; };
 		5562DD941C765C6300F5B60E /* medusa-3.lev in Resources */ = {isa = PBXBuildFile; fileRef = 5562D96E1C765BF500F5B60E /* medusa-3.lev */; };
@@ -388,7 +387,6 @@
 		5562D9681C765BF500F5B60E /* knox.des */ = {isa = PBXFileReference; lastKnownFileType = text; path = knox.des; sourceTree = "<group>"; };
 		5562D9691C765BF500F5B60E /* knox.lev */ = {isa = PBXFileReference; lastKnownFileType = file; path = knox.lev; sourceTree = "<group>"; };
 		5562D96A1C765BF500F5B60E /* license */ = {isa = PBXFileReference; lastKnownFileType = text; path = license; sourceTree = "<group>"; };
-		5562D96B1C765BF500F5B60E /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		5562D96C1C765BF500F5B60E /* medusa-1.lev */ = {isa = PBXFileReference; lastKnownFileType = file; path = "medusa-1.lev"; sourceTree = "<group>"; };
 		5562D96D1C765BF500F5B60E /* medusa-2.lev */ = {isa = PBXFileReference; lastKnownFileType = file; path = "medusa-2.lev"; sourceTree = "<group>"; };
 		5562D96E1C765BF500F5B60E /* medusa-3.lev */ = {isa = PBXFileReference; lastKnownFileType = file; path = "medusa-3.lev"; sourceTree = "<group>"; };
@@ -624,7 +622,6 @@
 		5562DA5A1C765BF500F5B60E /* xwindowp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xwindowp.h; sourceTree = "<group>"; };
 		5562DA5B1C765BF500F5B60E /* you.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = you.h; sourceTree = "<group>"; };
 		5562DA5C1C765BF500F5B60E /* youprop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = youprop.h; sourceTree = "<group>"; };
-		5562DA5D1C765BF500F5B60E /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; name = Makefile; path = ../../Makefile; sourceTree = "<group>"; };
 		5562DA5E1C765BF500F5B60E /* Porting */ = {isa = PBXFileReference; lastKnownFileType = text; name = Porting; path = ../../Porting; sourceTree = "<group>"; };
 		5562DA5F1C765BF500F5B60E /* README */ = {isa = PBXFileReference; lastKnownFileType = text; name = README; path = ../../README; sourceTree = "<group>"; };
 		5562DA621C765BF500F5B60E /* allmain.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = allmain.c; sourceTree = "<group>"; };
@@ -767,7 +764,6 @@
 		5562DB951C765BF600F5B60E /* NHrsrc.hqx */ = {isa = PBXFileReference; lastKnownFileType = archive.binhex; path = NHrsrc.hqx; sourceTree = "<group>"; };
 		5562DB961C765BF600F5B60E /* NHsound.hqx */ = {isa = PBXFileReference; lastKnownFileType = archive.binhex; path = NHsound.hqx; sourceTree = "<group>"; };
 		5562DB971C765BF600F5B60E /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		5562DBE01C765BF600F5B60E /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes; sourceTree = "<group>"; };
 		5562DBE11C765BF600F5B60E /* cpp1.shr */ = {isa = PBXFileReference; lastKnownFileType = text; path = cpp1.shr; sourceTree = "<group>"; };
 		5562DBE21C765BF600F5B60E /* cpp2.shr */ = {isa = PBXFileReference; lastKnownFileType = text; path = cpp2.shr; sourceTree = "<group>"; };
 		5562DBE31C765BF600F5B60E /* cpp3.shr */ = {isa = PBXFileReference; lastKnownFileType = text; path = cpp3.shr; sourceTree = "<group>"; };
@@ -784,11 +780,11 @@
 		5562DBEF1C765BF600F5B60E /* macosx10.7 */ = {isa = PBXFileReference; lastKnownFileType = text; path = macosx10.7; sourceTree = "<group>"; };
 		5562DBF01C765BF600F5B60E /* unix */ = {isa = PBXFileReference; lastKnownFileType = text; path = unix; sourceTree = "<group>"; };
 		5562DBF11C765BF600F5B60E /* Install.unx */ = {isa = PBXFileReference; lastKnownFileType = text; path = Install.unx; sourceTree = "<group>"; };
-		5562DBF21C765BF600F5B60E /* Makefile.dat */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.dat; sourceTree = "<group>"; };
-		5562DBF31C765BF600F5B60E /* Makefile.doc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.doc; sourceTree = "<group>"; };
-		5562DBF41C765BF600F5B60E /* Makefile.src */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.src; sourceTree = "<group>"; };
-		5562DBF51C765BF600F5B60E /* Makefile.top */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.top; sourceTree = "<group>"; };
-		5562DBF61C765BF600F5B60E /* Makefile.utl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.utl; sourceTree = "<group>"; };
+		5562DBF21C765BF600F5B60E /* Makefile.dat */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; path = Makefile.dat; sourceTree = "<group>"; };
+		5562DBF31C765BF600F5B60E /* Makefile.doc */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; path = Makefile.doc; sourceTree = "<group>"; };
+		5562DBF41C765BF600F5B60E /* Makefile.src */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; path = Makefile.src; sourceTree = "<group>"; };
+		5562DBF51C765BF600F5B60E /* Makefile.top */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; path = Makefile.top; sourceTree = "<group>"; };
+		5562DBF61C765BF600F5B60E /* Makefile.utl */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; path = Makefile.utl; sourceTree = "<group>"; };
 		5562DBF71C765BF600F5B60E /* mkmkfile.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = mkmkfile.sh; sourceTree = "<group>"; };
 		5562DBF81C765BF600F5B60E /* nethack.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = nethack.sh; sourceTree = "<group>"; };
 		5562DBF91C765BF600F5B60E /* NewInstall.unx */ = {isa = PBXFileReference; lastKnownFileType = text; path = NewInstall.unx; sourceTree = "<group>"; };
@@ -823,7 +819,6 @@
 		5562DC761C765BF600F5B60E /* makedefs */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = makedefs; sourceTree = "<group>"; };
 		5562DC771C765BF600F5B60E /* makedefs.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = makedefs.c; sourceTree = "<group>"; };
 		5562DC781C765BF700F5B60E /* makedefs.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = makedefs.o; sourceTree = "<group>"; };
-		5562DC791C765BF700F5B60E /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		5562DC7A1C765BF700F5B60E /* mdgrep.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mdgrep.h; sourceTree = "<group>"; };
 		5562DC7B1C765BF700F5B60E /* mdgrep.pl */ = {isa = PBXFileReference; lastKnownFileType = text.script.perl; path = mdgrep.pl; sourceTree = "<group>"; };
 		5562DC7C1C765BF700F5B60E /* panic.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = panic.c; sourceTree = "<group>"; };
@@ -887,6 +882,7 @@
 		5562DE8B1C765EB800F5B60E /* unixtty.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = unixtty.c; sourceTree = "<group>"; };
 		5562DE8C1C765EB800F5B60E /* uudecode.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = uudecode.c; sourceTree = "<group>"; };
 		5562DE921C76601500F5B60E /* SwiftNetHackBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftNetHackBridge.swift; sourceTree = "<group>"; };
+		5562DE941C76696E00F5B60E /* SwiftHack.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftHack.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -920,6 +916,7 @@
 		5562D90A1C765AD300F5B60E /* SwiftHack */ = {
 			isa = PBXGroup;
 			children = (
+				5562DE941C76696E00F5B60E /* SwiftHack.pch */,
 				5562D91A1C765B8700F5B60E /* winswift-bridging-header.h */,
 				5562D91B1C765B8700F5B60E /* winswift.c */,
 				5562D91C1C765B8700F5B60E /* winswift.h */,
@@ -948,7 +945,6 @@
 				5562D9D21C765BF500F5B60E /* doc */,
 				5562D9F81C765BF500F5B60E /* Files */,
 				5562D9F91C765BF500F5B60E /* include */,
-				5562DA5D1C765BF500F5B60E /* Makefile */,
 				5562DA5E1C765BF500F5B60E /* Porting */,
 				5562DA5F1C765BF500F5B60E /* README */,
 				5562DA601C765BF500F5B60E /* src */,
@@ -1035,7 +1031,6 @@
 				5562D9681C765BF500F5B60E /* knox.des */,
 				5562D9691C765BF500F5B60E /* knox.lev */,
 				5562D96A1C765BF500F5B60E /* license */,
-				5562D96B1C765BF500F5B60E /* Makefile */,
 				5562D96C1C765BF500F5B60E /* medusa-1.lev */,
 				5562D96D1C765BF500F5B60E /* medusa-2.lev */,
 				5562D96E1C765BF500F5B60E /* medusa-3.lev */,
@@ -1460,7 +1455,6 @@
 		5562DBDF1C765BF600F5B60E /* unix */ = {
 			isa = PBXGroup;
 			children = (
-				5562DBE01C765BF600F5B60E /* .gitattributes */,
 				5562DBE11C765BF600F5B60E /* cpp1.shr */,
 				5562DBE21C765BF600F5B60E /* cpp2.shr */,
 				5562DBE31C765BF600F5B60E /* cpp3.shr */,
@@ -1531,7 +1525,6 @@
 				5562DC761C765BF600F5B60E /* makedefs */,
 				5562DC771C765BF600F5B60E /* makedefs.c */,
 				5562DC781C765BF700F5B60E /* makedefs.o */,
-				5562DC791C765BF700F5B60E /* Makefile */,
 				5562DC7A1C765BF700F5B60E /* mdgrep.h */,
 				5562DC7B1C765BF700F5B60E /* mdgrep.pl */,
 				5562DC7C1C765BF700F5B60E /* panic.c */,
@@ -1977,7 +1970,6 @@
 				5562DE3E1C765D4D00F5B60E /* quest.c in Sources */,
 				5562DE3A1C765D4D00F5B60E /* polyself.c in Sources */,
 				5562DE261C765D4D00F5B60E /* mkmap.c in Sources */,
-				5562DD911C765C6300F5B60E /* Makefile in Sources */,
 				5562DE2D1C765D4D00F5B60E /* monst.c in Sources */,
 				5562DE321C765D4D00F5B60E /* music.c in Sources */,
 				5562DE4D1C765D4D00F5B60E /* sp_lev.c in Sources */,
@@ -2114,6 +2106,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREFIX_HEADER = SwiftHack.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					NOMAIL,
 					NOTPARMDECL,
@@ -2128,12 +2121,14 @@
 					"$(inherited)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "main=unixMain";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.maddthesane.SwiftHack;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "winswift-bridging-header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				WARNING_CFLAGS = "-Wno-incompatible-pointer-types";
 			};
 			name = Debug;
 		};
@@ -2143,6 +2138,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREFIX_HEADER = SwiftHack.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					NOMAIL,
 					NOTPARMDECL,
@@ -2157,11 +2153,13 @@
 					"$(inherited)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "main=unixMain";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.maddthesane.SwiftHack;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "winswift-bridging-header.h";
+				WARNING_CFLAGS = "-Wno-incompatible-pointer-types";
 			};
 			name = Release;
 		};

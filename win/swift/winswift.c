@@ -1,5 +1,6 @@
-
+#include "SwiftHack.pch"
 #include "winswift.h"
+
 
 /* These will be filled out by our Swift main file */
 struct window_procs swift_procs = {

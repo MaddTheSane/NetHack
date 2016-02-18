@@ -8,6 +8,13 @@
 
 import Cocoa
 
+func swift_init_nhwindows(argc: UnsafeMutablePointer<Int32>, argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>) {
+	iflags.window_inited = true;
+}
+
+func swift_win_putstr(winID: winid, flags: Int32, str: UnsafePointer<Int8>) {
+	
+}
 
 class AppDelegate: NSObject, NSApplicationDelegate {
 
