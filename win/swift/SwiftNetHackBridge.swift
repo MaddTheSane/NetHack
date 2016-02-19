@@ -430,61 +430,59 @@ func Is_astralevel(x: UnsafeMutablePointer<d_level>) -> Bool {
 	return on_level(x, &dungeon_topology.d_astral_level)
 }
 
-
-
-@inline(__always) func init_nhwindows(argc: UnsafeMutablePointer<Int32>, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>) {
+func init_nhwindows(argc: UnsafeMutablePointer<Int32>, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>) {
 	windowprocs.win_init_nhwindows(argc, argv)
 }
 
-@inline(__always) func player_selection() {
+func player_selection() {
 	windowprocs.win_player_selection()
 }
 
-@inline(__always) func askname() {
+func askname() {
 	windowprocs.win_askname()
 }
 
-@inline(__always) func get_nh_event() {
+func get_nh_event() {
 	windowprocs.win_get_nh_event()
 }
 
-@inline(__always) func exit_nhwindows(reason: UnsafePointer<Int8>) {
+func exit_nhwindows(reason: UnsafePointer<Int8>) {
 	windowprocs.win_exit_nhwindows(reason)
 }
 
-@inline(__always) func suspend_nhwindows(reason: UnsafePointer<Int8>) {
+func suspend_nhwindows(reason: UnsafePointer<Int8>) {
 	windowprocs.win_suspend_nhwindows(reason)
 }
 
-@inline(__always) func resume_nhwindows() {
+func resume_nhwindows() {
 	windowprocs.win_resume_nhwindows()
 }
 
-@inline(__always) func create_nhwindow(winType: Int32) -> winid {
+func create_nhwindow(winType: Int32) -> winid {
 	return windowprocs.win_create_nhwindow(winType)
 }
 
-@inline(__always) func clear_nhwindow(wid: winid) {
+func clear_nhwindow(wid: winid) {
 	windowprocs.win_clear_nhwindow(wid)
 }
 
-@inline(__always) func display_nhwindow(wid: winid, _ block: Bool) {
+func display_nhwindow(wid: winid, _ block: Bool) {
 	windowprocs.win_display_nhwindow(wid, block ? 1 : 0)
 }
 
-@inline(__always) func destroy_nhwindow(wid: winid) {
+func destroy_nhwindow(wid: winid) {
 	windowprocs.win_destroy_nhwindow(wid)
 }
 
-@inline(__always) func curs(wid: winid, _ x: Int32, _ y: Int32) {
+func curs(wid: winid, _ x: Int32, _ y: Int32) {
 	windowprocs.win_curs(wid, x, y)
 }
 
-@inline(__always) func putstr(wid: winid, _ attr: Int32, _ str: UnsafePointer<Int8>) {
+func putstr(wid: winid, _ attr: Int32, _ str: UnsafePointer<Int8>) {
 	windowprocs.win_putstr(wid, attr, str)
 }
 
-@inline(__always) func putmixed(wid: winid, _ attr: Int32, _ str: UnsafePointer<Int8>) {
+func putmixed(wid: winid, _ attr: Int32, _ str: UnsafePointer<Int8>) {
 	windowprocs.win_putmixed(wid, attr, str)
 }
 
@@ -507,12 +505,40 @@ func display_file(fileName: UnsafePointer<Int8>, mustExist: Bool) {
 #ifdef POSITIONBAR
 #define update_positionbar (*windowprocs.win_update_positionbar)
 #endif
-#define print_glyph (*windowprocs.win_print_glyph)
-#define raw_print (*windowprocs.win_raw_print)
-#define raw_print_bold (*windowprocs.win_raw_print_bold)
-#define nhgetch (*windowprocs.win_nhgetch)
-#define nh_poskey (*windowprocs.win_nh_poskey)
 */
+
+func print_glyph(wid: winid, _ x: Int32, _ y: Int32, _ glyph: Int32, _ under: Int32) {
+	windowprocs.win_print_glyph(wid, x, y, glyph, under)
+}
+
+func print_glyph(wid: winid, x: Int32, y: Int32, glyph: Int32, under: Int32 = NO_GLYPH) {
+	windowprocs.win_print_glyph(wid, x, y, glyph, under)
+}
+
+func raw_print(str: UnsafePointer<Int8>, bold: Bool = false) {
+	if bold {
+		raw_print_bold(str)
+	} else {
+		windowprocs.win_raw_print(str)
+	}
+}
+
+func raw_print_bold(str: UnsafePointer<Int8>) {
+	windowprocs.win_raw_print_bold(str)
+}
+
+func nhgetch() -> Int32 {
+	return windowprocs.win_nhgetch()
+}
+
+func nh_poskey(x: UnsafeMutablePointer<Int32>, _ y: UnsafeMutablePointer<Int32>, _ mod: UnsafeMutablePointer<Int32>) -> Int32 {
+	return windowprocs.win_nh_poskey(x, y, mod)
+}
+
+func nh_poskey(inout x x: Int32, inout y: Int32, inout mod: Int32) -> Int32 {
+	return windowprocs.win_nh_poskey(&x, &y, &mod)
+}
+
 func nhbell() {
 	windowprocs.win_nhbell()
 }

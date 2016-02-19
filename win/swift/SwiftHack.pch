@@ -9,10 +9,14 @@
 #ifndef SwiftHack_pch
 #define SwiftHack_pch
 
-#define SKIP_BOOLEAN
-//#define UNWIDENED_PROTOTYPES
-#include <stdbool.h>
-typedef bool boolean;
-//#define BOOLEAN_P bool
+#include "ourbool.h"
+#include <math.h>
+#include <tgmath.h>
+#include <stdio.h>
+#include <time.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/wait.h>
 
 #endif /* SwiftHack_pch */

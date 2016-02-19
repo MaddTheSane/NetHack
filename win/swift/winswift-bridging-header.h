@@ -1,4 +1,4 @@
-#include "SwiftHack.pch"
+#include "ourbool.h"
 #include "winswift.h"
 #include "monst.h"
 #include "pm.h"

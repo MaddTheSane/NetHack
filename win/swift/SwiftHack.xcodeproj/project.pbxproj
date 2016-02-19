@@ -883,6 +883,7 @@
 		5562DE8C1C765EB800F5B60E /* uudecode.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = uudecode.c; sourceTree = "<group>"; };
 		5562DE921C76601500F5B60E /* SwiftNetHackBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftNetHackBridge.swift; sourceTree = "<group>"; };
 		5562DE941C76696E00F5B60E /* SwiftHack.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftHack.pch; sourceTree = "<group>"; };
+		5562DE951C7676AA00F5B60E /* ourbool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ourbool.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -917,15 +918,15 @@
 			isa = PBXGroup;
 			children = (
 				5562DE941C76696E00F5B60E /* SwiftHack.pch */,
-				5562D91A1C765B8700F5B60E /* winswift-bridging-header.h */,
+				5562DE951C7676AA00F5B60E /* ourbool.h */,
 				5562D91B1C765B8700F5B60E /* winswift.c */,
 				5562D91C1C765B8700F5B60E /* winswift.h */,
 				5562D9181C765B2F00F5B60E /* main.swift */,
-				5562DE921C76601500F5B60E /* SwiftNetHackBridge.swift */,
 				5562D90B1C765AD300F5B60E /* AppDelegate.swift */,
 				5562D90D1C765AD300F5B60E /* Assets.xcassets */,
 				5562D90F1C765AD400F5B60E /* MainMenu.xib */,
 				5562D9121C765AD400F5B60E /* Info.plist */,
+				5562DE961C7676B900F5B60E /* Bridging code */,
 				5562D91F1C765BC500F5B60E /* NetHack */,
 			);
 			name = SwiftHack;
@@ -1637,6 +1638,15 @@
 				5562DE871C765EB800F5B60E /* wdnharp.uu */,
 			);
 			path = sounds;
+			sourceTree = "<group>";
+		};
+		5562DE961C7676B900F5B60E /* Bridging code */ = {
+			isa = PBXGroup;
+			children = (
+				5562D91A1C765B8700F5B60E /* winswift-bridging-header.h */,
+				5562DE921C76601500F5B60E /* SwiftNetHackBridge.swift */,
+			);
+			name = "Bridging code";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
