@@ -3,6 +3,7 @@
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "nhsnd.h"
 
 extern boolean notonhead; /* for long worms */
 
@@ -38,10 +39,6 @@ STATIC_DCL void FDECL(add_class, (char *, CHAR_P));
 STATIC_DCL void FDECL(setapplyclasses, (char *));
 STATIC_DCL boolean FDECL(is_valid_jump_pos, (int, int, int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(find_poleable_mon, (coord *, int, int));
-
-#ifdef AMIGA
-void FDECL(amii_speaker, (struct obj *, char *, int));
-#endif
 
 static const char no_elbow_room[] =
     "don't have enough elbow-room to maneuver.";

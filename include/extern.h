@@ -1021,7 +1021,7 @@ E int NDECL(doclose);
 
 /* ### sndmain.c ### */
 
-E void FDECL(nh_speaker, (struct obj *, char *));
+E void FDECL(nh_speaker, (struct obj *, char *, boolean));
 
 #ifdef MAC
 /* These declarations are here because the main code calls them. */
@@ -1039,10 +1039,6 @@ E int FDECL(macunlink, (const char *));
 /* ### macmain.c ### */
 
 E boolean NDECL(authorize_wizard_mode);
-
-/* ### macsnd.c ### */
-
-E void FDECL(mac_speaker, (struct obj *, char *));
 
 /* ### macunix.c ### */
 

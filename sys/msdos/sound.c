@@ -13,6 +13,7 @@
  */
 
 #include "hack.h"
+#include "nhsnd.h"
 #include <stdio.h>
 #include "portio.h"
 

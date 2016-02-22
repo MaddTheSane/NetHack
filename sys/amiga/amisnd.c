@@ -11,6 +11,7 @@
 
 #include "hack.h"
 #include "dlb.h"
+#include "nhsnd.h"
 
 #undef red
 #undef blue
@@ -57,7 +58,6 @@ extern struct GfxBase *GfxBase;
 
 UBYTE whichannel[] = { 1, 2, 4, 8 };
 void makesound(char *, char *, int vol);
-void amii_speaker(struct obj *instr, char *melody, int vol);
 
 /* A major scale in indexs to freqtab... */
 int notetab[] = { 0, 2, 4, 5, 7, 9, 11, 12 };
