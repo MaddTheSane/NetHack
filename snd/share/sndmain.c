@@ -24,18 +24,18 @@ void nh_speaker(struct obj *instr, char *notes, boolean improv)
 #endif
 #ifdef VPIX_MUSIC
     if (sco_flag_console)
-        vpix_speaker(instr, buf);
+        vpix_speaker(instr, notes);
 #endif
 #ifdef UNIX386MUSIC
     /* if user is at the console, play through the console speaker */
     if (atconsole())
-        speaker(instr, buf);
+        speaker(instr, notes);
 #endif
 #ifdef MAC
     mac_speaker(instr, notes);
 #endif
 #ifdef PCMUSIC
-    pc_speaker(instr, buf);
+    pc_speaker(instr, notes);
 #endif
      /*TODO: implement others*/
 }
