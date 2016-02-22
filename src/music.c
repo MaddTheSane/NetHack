@@ -476,7 +476,9 @@ struct obj *instr;
 #ifdef PCMUSIC
     pc_speaker(&itmp, "C");
 #endif
-#endif /* MAC || AMIGA || VPIX_MUSIC || PCMUSIC */
+#else /* MAC || AMIGA || VPIX_MUSIC || PCMUSIC */
+    nh_speaker(&itmp, "C");
+#endif
 
     if (!do_spec)
         pline("What you produce is quite far from music...");
@@ -658,6 +660,7 @@ struct obj *instr;
             amii_speaker(instr, nbuf, AMII_OKAY_VOLUME);
         }
 #endif
+        nh_speaker(instr, buf);
         /* Check if there was the Stronghold drawbridge near
          * and if the tune conforms to what we're waiting for.
          */

@@ -1019,6 +1019,10 @@ E boolean FDECL(stumble_on_door_mimic, (int, int));
 E int FDECL(doopen_indir, (int, int));
 E int NDECL(doclose);
 
+/* ### sndmain.c ### */
+
+E void FDECL(nh_speaker, (struct obj *, char *));
+
 #ifdef MAC
 /* These declarations are here because the main code calls them. */
 
