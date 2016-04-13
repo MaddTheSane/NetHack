@@ -126,6 +126,9 @@ STATIC_PTR int NDECL(wiz_show_wmodes);
 #if defined(__BORLANDC__) && !defined(_WIN32)
 extern void FDECL(show_borlandc_stats, (winid));
 #endif
+#ifdef DEBUG_MIGRATING_MONS
+STATIC_PTR int NDECL(wiz_migrate_mons);
+#endif
 STATIC_DCL void FDECL(count_obj, (struct obj *, long *, long *, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void FDECL(obj_chain, (winid, const char *, struct obj *, long *, long *));
 STATIC_DCL void FDECL(mon_invent_chain, (winid, const char *, struct monst *, long *, long *));
@@ -552,7 +555,7 @@ wiz_genesis()
 STATIC_PTR int
 wiz_where()
 {
-	if (wizard) print_dungeon();
+	if (wizard) (void) print_dungeon(FALSE, (schar *)0, (xchar *)0);
 	else	    pline("Unavailable command '^O'.");
 	return 0;
 }
@@ -1136,14 +1139,21 @@ minimal_enlightenment()
 	anything any;
 	int genidx, n;
 	char buf[BUFSZ], buf2[BUFSZ];
-	static const char fmtstr[] = "%-15s: %-12s";
-	static const char deity_fmtstr[] = "%-17s%s";
+	static const char untabbed_fmtstr[] = "%-15s: %-12s";
+	static const char untabbed_deity_fmtstr[] = "%-17s%s";
+	static const char tabbed_fmtstr[] = "%s:\t%-12s";
+	static const char tabbed_deity_fmtstr[] = "%s\t%s";
+	static const char *fmtstr;
+	static const char *deity_fmtstr;
 
+	fmtstr = iflags.menu_tab_sep ? tabbed_fmtstr : untabbed_fmtstr;
+	deity_fmtstr = iflags.menu_tab_sep ?
+			tabbed_deity_fmtstr : untabbed_deity_fmtstr; 
 	any.a_void = 0;
 	buf[0] = buf2[0] = '\0';
 	tmpwin = create_nhwindow(NHW_MENU);
 	start_menu(tmpwin);
-	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_BOLD, "Starting", FALSE);
+	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, "Starting", FALSE);
 
 	/* Starting name, race, role, gender */
 	Sprintf(buf, fmtstr, "name", plname);
@@ -1162,7 +1172,7 @@ minimal_enlightenment()
 
 	/* Current name, race, role, gender */
 	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", FALSE);
-	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_BOLD, "Current", FALSE);
+	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, "Current", FALSE);
 	Sprintf(buf, fmtstr, "race", Upolyd ? youmonst.data->mname : urace.noun);
 	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, FALSE);
 	if (Upolyd) {
@@ -1189,7 +1199,7 @@ minimal_enlightenment()
 
 	/* Deity list */
 	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", FALSE);
-	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_BOLD, "Deities", FALSE);
+	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, "Deities", FALSE);
 	Sprintf(buf2, deity_fmtstr, align_gname(A_CHAOTIC),
 	    (u.ualignbase[A_ORIGINAL] == u.ualign.type
 		&& u.ualign.type == A_CHAOTIC) ? " (s,c)" :
@@ -1499,6 +1509,9 @@ struct ext_func_tab extcmdlist[] = {
 	 */
 	{(char *)0, (char *)0, donull, TRUE},
 	{(char *)0, (char *)0, donull, TRUE},
+#ifdef DEBUG_MIGRATING_MONS
+	{(char *)0, (char *)0, donull, TRUE},
+#endif
 	{(char *)0, (char *)0, donull, TRUE},
 	{(char *)0, (char *)0, donull, TRUE},
 	{(char *)0, (char *)0, donull, TRUE},
@@ -1521,6 +1534,9 @@ struct ext_func_tab extcmdlist[] = {
 static const struct ext_func_tab debug_extcmdlist[] = {
 	{"levelchange", "change experience level", wiz_level_change, TRUE},
 	{"lightsources", "show mobile light sources", wiz_light_sources, TRUE},
+#ifdef DEBUG_MIGRATING_MONS
+	{"migratemons", "migrate n random monsters", wiz_migrate_mons, TRUE},
+#endif
 	{"monpolycontrol", "control monster polymorphs", wiz_mon_polycontrol, TRUE},
 	{"panic", "test panic routine (fatal to game)", wiz_panic, TRUE},
 	{"polyself", "polymorph self", wiz_polyself, TRUE},
@@ -1749,6 +1765,35 @@ sanity_check()
 	timer_sanity_check();
 }
 
+#ifdef DEBUG_MIGRATING_MONS
+static int
+wiz_migrate_mons()
+{
+	int mcount = 0;
+	char inbuf[BUFSZ];
+	struct permonst *ptr;
+	struct monst *mtmp;
+	d_level tolevel;
+	getlin("How many random monsters to migrate? [0]", inbuf);
+	if (*inbuf == '\033') return 0;
+	mcount = atoi(inbuf);
+	if (mcount < 0 || mcount > (COLNO * ROWNO) || Is_botlevel(&u.uz))
+		return 0;
+	while (mcount > 0) {
+		if (Is_stronghold(&u.uz))
+		    assign_level(&tolevel, &valley_level);
+		else
+		    get_level(&tolevel, depth(&u.uz) + 1);
+		ptr = rndmonst();
+		mtmp = makemon(ptr, 0, 0, NO_MM_FLAGS);
+		if (mtmp) migrate_to_level(mtmp, ledger_no(&tolevel),
+				MIGR_RANDOM, (coord *)0);
+		mcount--;
+	}
+	return 0;
+}
+#endif
+
 #endif /* WIZARD */
 
 #define unctrl(c)	((c) <= C('z') ? (0x60 | (c)) : (c))
@@ -1789,10 +1834,21 @@ register char *cmd;
 		flags.move = FALSE;
 		return;		/* probably we just had an interrupt */
 	}
-
+	if (iflags.num_pad && iflags.num_pad_mode == 1) {
+		/* This handles very old inconsistent DOS/Windows behaviour
+		 * in a new way: earlier, the keyboard handler mapped these,
+		 * which caused counts to be strange when entered from the
+		 * number pad. Now do not map them until here. 
+		 */
+		switch (*cmd) {
+		    case '5':       *cmd = 'g'; break;
+		    case M('5'):    *cmd = 'G'; break;
+		    case M('0'):    *cmd = 'I'; break;
+        	}
+        }
 	/* handle most movement commands */
 	do_walk = do_rush = prefix_seen = FALSE;
-	flags.travel = 0;
+	flags.travel = iflags.travel1 = 0;
 	switch (*cmd) {
 	 case 'g':  if (movecmd(cmd[1])) {
 			flags.run = 2;
@@ -1842,6 +1898,7 @@ register char *cmd;
 	 case CMD_TRAVEL:
 		    if (iflags.travelcmd) {
 			    flags.travel = 1;
+			    iflags.travel1 = 1;
 			    flags.run = 8;
 			    flags.nopick = 1;
 			    do_rush = TRUE;
@@ -2091,20 +2148,34 @@ const char *msg;
 		putstr(win, 0, "");
 	    }
 	}
-	if (iflags.num_pad) {
-		putstr(win, 0, "Valid direction keys (with number_pad on) are:");
-		putstr(win, 0, "          7  8  9");
-		putstr(win, 0, "           \\ | / ");
-		putstr(win, 0, "          4- . -6");
-		putstr(win, 0, "           / | \\ ");
-		putstr(win, 0, "          1  2  3");
+	if (iflags.num_pad && u.umonnum == PM_GRID_BUG) {
+	    putstr(win, 0, "Valid direction keys in your current form (with number_pad on) are:");
+	    putstr(win, 0, "             8   ");
+	    putstr(win, 0, "             |   ");
+	    putstr(win, 0, "          4- . -6");
+	    putstr(win, 0, "             |   ");
+	    putstr(win, 0, "             2   ");
+	} else if (u.umonnum == PM_GRID_BUG) {
+	    putstr(win, 0, "Valid direction keys in your current form are:");
+	    putstr(win, 0, "             k   ");
+	    putstr(win, 0, "             |   ");
+	    putstr(win, 0, "          h- . -l");
+	    putstr(win, 0, "             |   ");
+	    putstr(win, 0, "             j   ");
+	} else if (iflags.num_pad) {
+	    putstr(win, 0, "Valid direction keys (with number_pad on) are:");
+	    putstr(win, 0, "          7  8  9");
+	    putstr(win, 0, "           \\ | / ");
+	    putstr(win, 0, "          4- . -6");
+	    putstr(win, 0, "           / | \\ ");
+	    putstr(win, 0, "          1  2  3");
 	} else {
-		putstr(win, 0, "Valid direction keys are:");
-		putstr(win, 0, "          y  k  u");
-		putstr(win, 0, "           \\ | / ");
-		putstr(win, 0, "          h- . -l");
-		putstr(win, 0, "           / | \\ ");
-		putstr(win, 0, "          b  j  n");
+	    putstr(win, 0, "Valid direction keys are:");
+	    putstr(win, 0, "          y  k  u");
+	    putstr(win, 0, "           \\ | / ");
+	    putstr(win, 0, "          h- . -l");
+	    putstr(win, 0, "           / | \\ ");
+	    putstr(win, 0, "          b  j  n");
 	};
 	putstr(win, 0, "");
 	putstr(win, 0, "          <  up");
@@ -2320,11 +2391,11 @@ static
 void
 end_of_input()
 {
-	exit_nhwindows("End of input?");
 #ifndef NOSAVEONHANGUP
-	if (!program_state.done_hup++)
+	if (!program_state.done_hup++ && program_state.something_worth_saving)
 	    (void) dosave0();
 #endif
+	exit_nhwindows((char *)0);
 	clearlocks();
 	terminate(EXIT_SUCCESS);
 }
@@ -2384,15 +2455,20 @@ dotravel()
 
 	if (!iflags.travelcmd) return 0;
 	cmd[1]=0;
-	cc.x = u.ux;
-	cc.y = u.uy;
+	cc.x = iflags.travelcc.x;
+	cc.y = iflags.travelcc.y;
+	if (cc.x == -1 && cc.y == -1) {
+	    /* No cached destination, start attempt from current position */
+	    cc.x = u.ux;
+	    cc.y = u.uy;
+	}
 	pline("Where do you want to travel to?");
 	if (getpos(&cc, TRUE, "the desired destination") < 0) {
 		/* user pressed ESC */
 		return 0;
 	}
-	u.tx = cc.x;
-	u.ty = cc.y;
+	iflags.travelcc.x = u.tx = cc.x;
+	iflags.travelcc.y = u.ty = cc.y;
 	cmd[0] = CMD_TRAVEL;
 	readchar_queue = cmd;
 	return 0;
@@ -2401,6 +2477,7 @@ dotravel()
 #ifdef PORT_DEBUG
 # ifdef WIN32CON
 extern void NDECL(win32con_debug_keystrokes);
+extern void NDECL(win32con_handler_info);
 # endif
 
 int
@@ -2417,6 +2494,7 @@ wiz_port_debug()
 	} menu_selections[] = {
 #ifdef WIN32CON
 		{"test win32 keystrokes", win32con_debug_keystrokes},
+		{"show keystroke handler information", win32con_handler_info},
 #endif
 		{(char *)0, (void NDECL((*)))0}		/* array terminator */
 	};
@@ -2447,5 +2525,31 @@ wiz_port_debug()
 # endif /*PORT_DEBUG*/
 
 #endif /* OVL0 */
+#ifdef OVLB
+/*
+ *   Parameter validator for generic yes/no function to prevent
+ *   the core from sending too long a prompt string to the
+ *   window port causing a buffer overflow there.
+ */
+char
+yn_function(query,resp, def)
+const char *query,*resp;
+char def;
+{
+	char qbuf[QBUFSZ];
+	unsigned truncspot, reduction = sizeof(" [N]  ?") + 1;
+
+	if (resp) reduction += strlen(resp) + sizeof(" () ");
+	if (strlen(query) < (QBUFSZ - reduction))
+		return (*windowprocs.win_yn_function)(query, resp, def);
+	paniclog("Query truncated: ", query);
+	reduction += sizeof("...");
+	truncspot = QBUFSZ - reduction;
+	(void) strncpy(qbuf, query, (int)truncspot);
+	qbuf[truncspot] = '\0';
+	Strcat(qbuf,"...");
+	return (*windowprocs.win_yn_function)(qbuf, resp, def);
+}
+#endif
 
 /*cmd.c*/

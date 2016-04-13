@@ -18,7 +18,9 @@ STATIC_DCL int  FDECL(shkinit, (const struct shclass *,struct mkroom *));
 
 static const char * const shkliquors[] = {
     /* Ukraine */
-    "Njezjin", "Tsjernigof", "Gomel", "Ossipewsk", "Gorlowka",
+    "Njezjin", "Tsjernigof", "Ossipewsk", "Gorlowka",
+    /* Belarus */
+    "Gomel",
     /* N. Russia */
     "Konosja", "Weliki Oestjoeg", "Syktywkar", "Sablja",
     "Narodnaja", "Kyzyl",
@@ -383,7 +385,7 @@ struct mkroom	*sroom;
 	    return(-1);
 	}
 
-	if(MON_AT(sx, sy)) rloc(m_at(sx, sy)); /* insurance */
+	if(MON_AT(sx, sy)) (void) rloc(m_at(sx, sy), FALSE); /* insurance */
 
 	/* now initialize the shopkeeper monster structure */
 	if(!(shk = makemon(&mons[PM_SHOPKEEPER], sx, sy, NO_MM_FLAGS)))

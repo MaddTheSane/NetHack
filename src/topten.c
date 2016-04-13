@@ -77,7 +77,7 @@ STATIC_DCL void FDECL(nsb_unmung_line,(char*));
 
 /* must fit with end.c; used in rip.c */
 NEARDATA const char * const killed_by_prefix[] = {
-	"killed by ", "choked on ", "poisoned by ", "", "drowned in ",
+	"killed by ", "choked on ", "poisoned by ", "died of ", "drowned in ",
 	"burned by ", "dissolved in ", "crushed to death by ", "petrified by ",
 	"turned to slime by ", "killed by ", "", "", "", "", ""
 };
@@ -595,7 +595,7 @@ boolean so;
 	    if (!strncmp(t1->death, "quit", 4)) {
 		Strcat(linebuf, "quit");
 		second_line = FALSE;
-	    } else if (!strncmp(t1->death, "starv", 5)) {
+	    } else if (!strncmp(t1->death, "died of st", 10)) {
 		Strcat(linebuf, "starved to death");
 		second_line = FALSE;
 	    } else if (!strncmp(t1->death, "choked", 6)) {

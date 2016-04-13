@@ -1,4 +1,4 @@
-/*	SCCS Id: @(#)artifact.c 3.4	2003/02/08	*/
+/*	SCCS Id: @(#)artifact.c 3.4	2003/08/11	*/
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -420,7 +420,7 @@ long wp_mask;
 	     * that can print a message--need to guard against being printed
 	     * when restoring a game
 	     */
-	    make_hallucinated((long)!on, restoring ? FALSE : TRUE, wp_mask);
+	    (void) make_hallucinated((long)!on, restoring ? FALSE : TRUE, wp_mask);
 	}
 	if (spfx & SPFX_ESP) {
 	    if(on) ETelepat |= wp_mask;
@@ -707,7 +707,7 @@ winid tmpwin;		/* supplied by dodiscover() */
 
     for (i = 0; i < NROFARTIFACTS; i++) {
 	if (artidisco[i] == 0) break;	/* empty slot implies end of list */
-	if (i == 0) putstr(tmpwin, ATR_INVERSE, "Artifacts");
+	if (i == 0) putstr(tmpwin, iflags.menu_headings, "Artifacts");
 	m = artidisco[i];
 	otyp = artilist[m].otyp;
 	Sprintf(buf, "  %s [%s %s]", artiname(m),
@@ -821,6 +821,10 @@ char *hittee;			/* target's name: "you" or mon_nam(mdef) */
     switch (attack_indx) {
     case MB_INDEX_CANCEL:
 	old_uasmon = youmonst.data;
+	/* No mdef->mcan check: even a cancelled monster can be polymorphed
+	 * into a golem, and the "cancel" effect acts as if some magical
+	 * energy remains in spellcasting defenders to be absorbed later.
+	 */
 	if (!cancel_monst(mdef, mb, youattack, FALSE, FALSE)) {
 	    resisted = TRUE;
 	} else {
@@ -938,7 +942,8 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	boolean youattack = (magr == &youmonst);
 	boolean youdefend = (mdef == &youmonst);
 	boolean vis = (!youattack && magr && cansee(magr->mx, magr->my))
-		|| (!youdefend && cansee(mdef->mx, mdef->my));
+	    || (!youdefend && cansee(mdef->mx, mdef->my))
+	    || (youattack && u.uswallow && mdef == u.ustuck && !Blind);
 	boolean realizes_damage;
 	const char *wepdesc;
 	static const char you[] = "you";
@@ -1152,7 +1157,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 				      The(distant_name(otmp, xname)));
 			losexp("life drainage");
 			if (magr && magr->mhp < magr->mhpmax) {
-			    magr->mhp += (u.uhpmax - oldhpmax)/2;
+			    magr->mhp += (oldhpmax - u.uhpmax)/2;
 			    if (magr->mhp > magr->mhpmax) magr->mhp = magr->mhpmax;
 			}
 			return TRUE;
@@ -1194,7 +1199,8 @@ arti_invoke(obj)
 	/* It's a special power, not "just" a property */
 	if(obj->age > monstermoves) {
 	    /* the artifact is tired :-) */
-	    You_feel("that %s is ignoring you.", the(xname(obj)));
+	    You_feel("that %s %s ignoring you.",
+		     the(xname(obj)), otense(obj, "are"));
 	    /* and just got more so; patience is essential... */
 	    obj->age += (long) d(3,10);
 	    return 1;
@@ -1352,7 +1358,8 @@ arti_invoke(obj)
 	if(on && obj->age > monstermoves) {
 	    /* the artifact is tired :-) */
 	    u.uprops[oart->inv_prop].extrinsic ^= W_ARTI;
-	    You_feel("that %s is ignoring you.", the(xname(obj)));
+	    You_feel("that %s %s ignoring you.",
+		     the(xname(obj)), otense(obj, "are"));
 	    /* can't just keep repeatedly trying */
 	    obj->age += (long) d(3,10);
 	    return 1;

@@ -416,7 +416,7 @@ boolean artif;
 		   this level; let's create an adventurer's corpse instead, then */
 			otmp->corpsenm = PM_HUMAN;
 		}
-		start_corpse_timeout(otmp);
+		/* timer set below */
 		break;
 	    case EGG:
 		otmp->corpsenm = NON_PM;	/* generic egg */
@@ -617,6 +617,14 @@ boolean artif;
 						objects[otmp->otyp].oc_class);
 		return (struct obj *)0;
 	}
+
+	/* Some things must get done (timers) even if init = 0 */
+	switch (otmp->otyp) {
+	    case CORPSE:
+		start_corpse_timeout(otmp);
+		break;
+	}
+
 	/* unique objects may have an associated artifact entry */
 	if (objects[otyp].oc_unique && !otmp->oartifact)
 	    otmp = mk_artifact(otmp, (aligntyp)A_NONE);
@@ -907,7 +915,11 @@ boolean init;
 
 	if (objtype != CORPSE && objtype != STATUE)
 	    impossible("making corpstat type %d", objtype);
-	otmp = mksobj_at(objtype, x, y, init, FALSE);
+	if (x == 0 && y == 0) {		/* special case - random placement */
+		otmp = mksobj(objtype, init, FALSE);
+		if (otmp) rloco(otmp);
+	} else
+		otmp = mksobj_at(objtype, x, y, init, FALSE);
 	if (otmp) {
 	    if (mtmp) {
 		struct obj *otmp2;

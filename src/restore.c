@@ -1,4 +1,4 @@
-/*	SCCS Id: @(#)restore.c	3.4	2002/08/21	*/
+/*	SCCS Id: @(#)restore.c	3.4	2003/09/06	*/
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -217,11 +217,7 @@ boolean ghostly, frozen;
 		 * to new player's clock.  Assumption: new player arrived
 		 * immediately after old player died.
 		 */
-		if (ghostly && !frozen
-			&& otmp->otyp != OIL_LAMP
-			&& otmp->otyp != BRASS_LANTERN
-			&& otmp->otyp != CANDELABRUM_OF_INVOCATION
-			&& !Is_candle(otmp))
+		if (ghostly && !frozen && !age_is_relative(otmp))
 		    otmp->age = monstermoves - omoves + otmp->age;
 
 		/* get contents of a container or statue */
@@ -274,6 +270,13 @@ boolean ghostly;
 		if (moved && mtmp->data) {
 			int offset = mtmp->data - monbegin;	/*(ptrdiff_t)*/
 			mtmp->data = mons + offset;  /* new permonst location */
+		}
+		if (ghostly) {
+			int mndx = monsndx(mtmp->data);
+			if (propagate(mndx, TRUE, ghostly) == 0) {
+				/* cookie to trigger purge in getbones() */
+				mtmp->mhpmax = DEFUNCT_MONSTER;	
+			}
 		}
 		if(mtmp->minvent) {
 			struct obj *obj;
@@ -977,6 +980,7 @@ boolean ghostly;
 	    struct monst *mtmp = (struct monst *)otmp->oextra;
 
 	    mtmp->m_id = 0;
+	    mtmp->mpeaceful = mtmp->mtame = 0;	/* pet's owner died! */
 	}
 	if (ghostly && otmp->oattached == OATTACHED_M_ID) {
 	    (void) memcpy((genericptr_t)&oldid, (genericptr_t)otmp->oextra,

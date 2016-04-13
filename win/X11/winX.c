@@ -93,6 +93,7 @@ int updated_inventory;
 struct window_procs X11_procs = {
     "X11",
     WC_COLOR|WC_HILITE_PET,
+    0L,
     X11_init_nhwindows,
     X11_player_selection,
     X11_askname,
@@ -652,7 +653,7 @@ X11_create_nhwindow(type)
 	    create_text_window(wp);
 	    break;
 	default:
-	    panic("create_nhwindow: unknown type [%d]\n", type);
+	    panic("create_nhwindow: unknown type [%d]", type);
 	    break;
     }
     return window;
@@ -676,7 +677,7 @@ X11_clear_nhwindow(window)
 	    /* do nothing for these window types */
 	    break;
 	default:
-	    panic("clear_nhwindow: unknown window type [%d]\n", wp->type);
+	    panic("clear_nhwindow: unknown window type [%d]", wp->type);
 	    break;
     }
 }
@@ -739,7 +740,7 @@ X11_display_nhwindow(window, blocking)
 	    display_text_window(wp, blocking);	/* pop up text window */
 	    break;
 	default:
-	    panic("display_nhwindow: unknown window type [%d]\n", wp->type);
+	    panic("display_nhwindow: unknown window type [%d]", wp->type);
 	    break;
     }
 }
@@ -863,7 +864,7 @@ void X11_outrip(window, how)
     if (wp->type == NHW_TEXT) {
 	wp->text_information->is_rip = TRUE;
     } else {
-	panic("ripout on non-text window (window type [%d])\n", wp->type);
+	panic("ripout on non-text window (window type [%d])", wp->type);
     }
 
     calculate_rip_text(how);

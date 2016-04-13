@@ -499,7 +499,7 @@ register struct obj *obj;
 	otemp.quan = 1L;
 	otemp.onamelth = 0;
 	otemp.oxlth = 0;
-	if (objects[otemp.otyp].oc_class == POTION_CLASS && otemp.corpsenm)
+	if (objects[otemp.otyp].oc_class == POTION_CLASS && otemp.fromsink)
 	    /* kludge, meaning it's sink water */
 	    Sprintf(qbuf,"Call a stream of %s fluid:",
 		    OBJ_DESCR(objects[otemp.otyp]));
@@ -1000,6 +1000,15 @@ const char *colorpref;
 {
 	return (Hallucination || !colorpref) ?
 		hcolors[rn2(SIZE(hcolors))] : colorpref;
+}
+
+/* return a random real color unless hallucinating */
+const char *
+rndcolor()
+{
+	int k = rn2(CLR_MAX);
+	return Hallucination ? hcolor((char *)0) : (k == NO_COLOR) ?
+		"colorless" : c_obj_colors[k];
 }
 
 /* Aliases for road-runner nemesis

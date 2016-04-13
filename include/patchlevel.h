@@ -1,14 +1,14 @@
-/*	SCCS Id: @(#)patchlevel.h	3.4	2003/02/19	*/
+/*	SCCS Id: @(#)patchlevel.h	3.4	2003/12/06	*/
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /* NetHack may be freely redistributed.  See license for details. */
 
-/* NetHack 3.4.1 */
+/* NetHack 3.4.3 */
 #define VERSION_MAJOR	3
 #define VERSION_MINOR	4
 /*
  * PATCHLEVEL is updated for each release.
  */
-#define PATCHLEVEL	1
+#define PATCHLEVEL	3
 /*
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
@@ -24,21 +24,43 @@
 #define COPYRIGHT_BANNER_C \
 "         See license for details."
 
-#if 1
 /*
- * If two successive patchlevels have compatible data files (fat chance),
- * defining this with the value of the older one will allow its bones and
- * save files to work with the newer one.  The format is
+ * If two or more successive releases have compatible data files, define
+ * this with the version number of the oldest such release so that the
+ * new release will accept old save and bones files.  The format is
  *	0xMMmmPPeeL
  * 0x = literal prefix "0x", MM = major version, mm = minor version,
  * PP = patch level, ee = edit level, L = literal suffix "L",
  * with all four numbers specified as two hexadecimal digits.
  */
-#define VERSION_COMPATIBILITY 0x03040000L
-#endif
+#define VERSION_COMPATIBILITY 0x03040000L	/* 3.4.0-0 */
+
 
 /*****************************************************************************/
 /* Version 3.4.x */
+
+/*  Patch 3, December 7, 2003
+ *  Several dozen general bug fixes including at least one fatal bug
+ *  Correct several inconsistencies
+ *  Handle level completely filled with monsters better
+ *  Performance enhancements for win32tty port on Windows 98 and Me
+ *  win32gui player selection fixes
+ *  X11 player selection fixes, one of which could be fatal
+ *  Eliminated a gold-in-shop-container cheat
+ *  Include bones file version compatibility info in options file
+ */
+
+/*  Patch 2, August 30, 2003
+ *  Fix a fatal bug that caused a crash when applying figurine, candle, or
+ *      bell that gets used up
+ *  Fix a fatal bug that triggered a panic when your secondary weapon was
+ *      cursed during bones file creation
+ *  Several dozen general bug fixes
+ *  Fixed some Gnome compilation problems on Redhat 7.2 and 8.0
+ *  Fixed a problem in the util Makefile
+ *  Use random() by default under linux instead of lrand48()
+ *  win32 tty adjustments and support for loading alternative key handlers
+ */
 
 /*  Patch 1, February 22, 2003
  *  Fix a few fatal errors including one for reentering shops, one

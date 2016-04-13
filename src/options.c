@@ -1,4 +1,4 @@
-/*	SCCS Id: @(#)options.c	3.4	2003/01/08	*/
+/*	SCCS Id: @(#)options.c	3.4	2003/11/14	*/
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -98,6 +98,7 @@ static struct Bool_Opt
 #else
 	{"flush", (boolean *)0, FALSE, SET_IN_FILE},
 #endif
+	{"fullscreen", &iflags.wc2_fullscreen, FALSE, SET_IN_FILE},
 	{"help", &flags.help, TRUE, SET_IN_GAME},
 	{"hilite_pet",    &iflags.wc_hilite_pet, FALSE, SET_IN_GAME},	/*WC*/
 #ifdef ASCIIGRAPH
@@ -137,7 +138,6 @@ static struct Bool_Opt
 	{"news", (boolean *)0, FALSE, SET_IN_FILE},
 #endif
 	{"null", &flags.null, TRUE, SET_IN_GAME},
-	{"number_pad", &iflags.num_pad, FALSE, SET_IN_GAME},
 #ifdef MAC
 	{"page_wait", &flags.page_wait, TRUE, SET_IN_GAME},
 #else
@@ -172,6 +172,7 @@ static struct Bool_Opt
 	{"showscore", (boolean *)0, FALSE, SET_IN_FILE},
 #endif
 	{"silent", &flags.silent, TRUE, SET_IN_GAME},
+	{"softkeyboard", &iflags.wc2_softkeyboard, FALSE, SET_IN_FILE},
 	{"sortpack", &flags.sortpack, TRUE, SET_IN_GAME},
 	{"sound", &flags.soundok, TRUE, SET_IN_GAME},
 	{"sparkle", &flags.sparkle, TRUE, SET_IN_GAME},
@@ -187,8 +188,13 @@ static struct Bool_Opt
 	{"tombstone",&flags.tombstone, TRUE, SET_IN_GAME},
 	{"toptenwin",&flags.toptenwin, FALSE, SET_IN_GAME},
 	{"travel", &iflags.travelcmd, TRUE, SET_IN_GAME},
+#ifdef WIN32CON
+	{"use_inverse",   &iflags.wc_inverse, TRUE, SET_IN_GAME},		/*WC*/
+#else
 	{"use_inverse",   &iflags.wc_inverse, FALSE, SET_IN_GAME},		/*WC*/
+#endif
 	{"verbose", &flags.verbose, TRUE, SET_IN_GAME},
+	{"wraptext", &iflags.wc2_wraptext, FALSE, SET_IN_GAME},
 	{(char *)0, (boolean *)0, FALSE, 0}
 };
 
@@ -208,6 +214,7 @@ static struct Comp_Opt
 						8, DISP_IN_GAME },
 	{ "align_message", "message window alignment", 20, DISP_IN_GAME }, 	/*WC*/
 	{ "align_status", "status window alignment", 20, DISP_IN_GAME }, 	/*WC*/
+	{ "altkeyhandler", "alternate key handler", 20, DISP_IN_GAME },
 	{ "boulder",  "the symbol to use for displaying boulders",
 						1, SET_IN_GAME },
 	{ "catname",  "the name of your (first) cat (e.g., catname:Tabby)",
@@ -226,10 +233,10 @@ static struct Comp_Opt
 	{ "font_message", "the font to use in the message window",
 						40, DISP_IN_GAME },		/*WC*/
 	{ "font_size_map", "the size of the map font", 20, DISP_IN_GAME },	/*WC*/
-	{ "font_size_menu", "the size of the map font", 20, DISP_IN_GAME },	/*WC*/
-	{ "font_size_message", "the size of the map font", 20, DISP_IN_GAME },	/*WC*/
-	{ "font_size_status", "the size of the map font", 20, DISP_IN_GAME },	/*WC*/
-	{ "font_size_text", "the size of the map font", 20, DISP_IN_GAME },	/*WC*/
+	{ "font_size_menu", "the size of the menu font", 20, DISP_IN_GAME },	/*WC*/
+	{ "font_size_message", "the size of the message font", 20, DISP_IN_GAME },	/*WC*/
+	{ "font_size_status", "the size of the status font", 20, DISP_IN_GAME },	/*WC*/
+	{ "font_size_text", "the size of the text font", 20, DISP_IN_GAME },	/*WC*/
 	{ "font_status", "the font to use in status window", 40, DISP_IN_GAME }, /*WC*/
 	{ "font_text", "the font to use in text windows", 40, DISP_IN_GAME },	/*WC*/
 	{ "fruit",    "the name of a fruit you enjoy eating",
@@ -246,6 +253,7 @@ static struct Comp_Opt
 						4, SET_IN_FILE },
 	{ "menu_first_page", "jump to the first page in a menu",
 						4, SET_IN_FILE },
+	{ "menu_headings", "bold, inverse, or underline headings", 9, SET_IN_GAME },
 	{ "menu_invert_all", "invert all items in a menu", 4, SET_IN_FILE },
 	{ "menu_invert_page", "invert all items on this page of a menu",
 						4, SET_IN_FILE },
@@ -267,6 +275,7 @@ static struct Comp_Opt
 # endif
 	{ "name",     "your character's name (e.g., name:Merlin-W)",
 						PL_NSIZ, DISP_IN_GAME },
+	{ "number_pad", "use the number pad", 1, SET_IN_GAME},
 	{ "objects",  "the symbols to use for objects",
 						MAXOCLASSES, SET_IN_FILE },
 	{ "packorder", "the inventory order of the items in your pack",
@@ -290,11 +299,11 @@ static struct Comp_Opt
 						PL_CSIZ, DISP_IN_GAME },
 	{ "role",     "your starting role (e.g., Barbarian, Valkyrie)",
 						PL_CSIZ, DISP_IN_GAME },
-	{ "runmode", "display updating frequency when `running' or `travelling'",
+	{ "runmode", "display frequency when `running' or `travelling'",
 						sizeof "teleport", SET_IN_GAME },
 	{ "scores",   "the parts of the score list you wish to see",
 						32, SET_IN_GAME },
-	{ "scroll_amount", "scroll the map this amount when scroll_margin is reached",
+	{ "scroll_amount", "amount to scroll map when scroll_margin is reached",
 						20, DISP_IN_GAME }, /*WC*/
 	{ "scroll_margin", "scroll map when this far from the edge", 20, DISP_IN_GAME }, /*WC*/
 #ifdef MSDOS
@@ -316,6 +325,9 @@ static struct Comp_Opt
 						40, DISP_IN_GAME },
 	{ "videoshades", "gray shades to map to black/gray/white",
 						32, DISP_IN_GAME },
+#endif
+#ifdef WIN32CON
+	{"subkeyvalue", "override keystroke value", 7, SET_IN_FILE},
 #endif
 	{ "windowcolors",  "the foreground/background colors of windows",	/*WC*/
 						80, DISP_IN_GAME },
@@ -424,6 +436,12 @@ STATIC_OVL void FDECL(wc_set_font_name, (int, char *));
 STATIC_OVL int FDECL(wc_set_window_colors, (char *));
 STATIC_OVL boolean FDECL(is_wc_option, (const char *));
 STATIC_OVL boolean FDECL(wc_supported, (const char *));
+STATIC_OVL boolean FDECL(is_wc2_option, (const char *));
+STATIC_OVL boolean FDECL(wc2_supported, (const char *));
+#ifdef AUTOPICKUP_EXCEPTIONS
+STATIC_DCL void FDECL(remove_autopickup_exception, (struct autopickup_exception *));
+STATIC_OVL int FDECL(count_ape_maps, (int *, int *));
+#endif
 
 /* check whether a user-supplied option string is a proper leading
    substring of a particular option name; option string might have
@@ -470,7 +488,9 @@ const char *ev;
 void
 initoptions()
 {
+#ifndef MAC
 	char *opts;
+#endif
 	int i;
 
 	/* initialize the random number generator */
@@ -491,6 +511,7 @@ initoptions()
 #ifdef TTY_GRAPHICS
 	iflags.prevmsg_window = 's';
 #endif
+	iflags.menu_headings = ATR_INVERSE;
 
 	/* Use negative indices to indicate not yet selected */
 	flags.initrole = -1;
@@ -507,6 +528,7 @@ initoptions()
 	for (i = 0; i < WARNCOUNT; i++)
 		warnsyms[i] = def_warnsyms[i].sym;
 	iflags.bouldersym = 0;
+	iflags.travelcc.x = iflags.travelcc.y = -1;
 	flags.warnlevel = 1;
 	flags.warntype = 0L;
 
@@ -981,6 +1003,7 @@ boolean tinitial, tfrom_file;
 	if (match_optname(opts, "colour", 5, FALSE))
 		Strcpy(opts, "color");	/* fortunately this isn't longer */
 
+	if (!match_optname(opts, "subkeyvalue", 11, TRUE)) /* allow multiple */
 	duplicate_opt_detection(opts, 1);	/* 1 means compound opts */
 
 	/* special boolean options */
@@ -1059,6 +1082,35 @@ boolean tinitial, tfrom_file;
 		if (negated) bad_negation(fullname, FALSE);
 		else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0)
 			nmcpy(horsename, op, PL_PSIZ);
+		return;
+	}
+
+	fullname = "number_pad";
+	if (match_optname(opts, fullname, 10, TRUE)) {
+		boolean compat = (strlen(opts) <= 10);
+		number_pad(iflags.num_pad ? 1 : 0);
+		op = string_for_opt(opts, (compat || !initial));
+		if (!op) {
+		    if (compat || negated || initial) {
+			/* for backwards compatibility, "number_pad" without a
+			   value is a synonym for number_pad:1 */
+			iflags.num_pad = !negated;
+			if (iflags.num_pad) iflags.num_pad_mode = 0;
+		    }
+		    return;
+		}
+		if (negated) {
+		    bad_negation("number_pad", TRUE);
+		    return;
+		}
+		if (*op == '1' || *op == '2') {
+			iflags.num_pad = 1;
+			if (*op == '2') iflags.num_pad_mode = 1;
+			else iflags.num_pad_mode = 0;
+		} else if (*op == '0') {
+			iflags.num_pad = 0;
+			iflags.num_pad_mode = 0;
+		} else badoption(opts);
 		return;
 	}
 
@@ -1401,6 +1453,7 @@ goodfruit:
 	/* boulder:symbol */
 	fullname = "boulder";
 	if (match_optname(opts, fullname, 7, TRUE)) {
+		int clash = 0;
 		if (negated) {
 		    bad_negation(fullname, FALSE);
 		    return;
@@ -1409,11 +1462,22 @@ goodfruit:
 		if (!(opts = string_for_opt(opts, FALSE)))
 			return;
 		escapes(opts, opts);
-
-		/*
-		 * Override the default boulder symbol.
-		 */
-		iflags.bouldersym = (uchar) opts[0];
+		if (def_char_to_monclass(opts[0]) != MAXMCLASSES)
+			clash = 1;
+		else if (opts[0] >= '1' && opts[0] <= '5')
+			clash = 2;
+		if (clash) {
+			/* symbol chosen matches a used monster or warning
+			   symbol which is not good - reject it*/
+			pline(
+		  "Badoption - boulder symbol '%c' conflicts with a %s symbol.",
+				opts[0], (clash == 1) ? "monster" : "warning");
+		} else {
+			/*
+			 * Override the default boulder symbol.
+			 */
+			iflags.bouldersym = (uchar) opts[0];
+		}
 		if (!initial) need_redraw = TRUE;
 		return;
 	}
@@ -1463,6 +1527,19 @@ goodfruit:
 				badoption(opts);
 			else
 				flags.female = flags.initgend;
+		}
+		return;
+	}
+
+	/* altkeyhandler:string */
+	fullname = "altkeyhandler";
+	if (match_optname(opts, fullname, 4, TRUE)) {
+		if (negated) bad_negation(fullname, FALSE);
+		else if ((op = string_for_opt(opts, negated))) {
+#ifdef WIN32CON
+		    (void)strncpy(iflags.altkeyhandler, op, MAX_ALTKEYHANDLER - 5);
+		    load_keyboard_handler();
+#endif
 		}
 		return;
 	}
@@ -1663,29 +1740,28 @@ goodfruit:
 		 * string as a prefix to get the desired behaviour.
 		 *
 		 * For backward compatibility, no prefix is required,
-		 * and the presence of a i,a,g,v, or c without a
-		 * prefix sets the corresponding value to DISCLOSE_YES_WITHOUT_PROMPT;
+		 * and the presence of a i,a,g,v, or c without a prefix
+		 * sets the corresponding value to DISCLOSE_YES_WITHOUT_PROMPT.
 		 */
 		boolean badopt = FALSE;
 		int idx, prefix_val;
-		if (!(op = string_for_opt(opts, TRUE))) {
-			/* for backwards compatibility, "disclose" without a
-			 * value means all (was inventory and attributes,
-			 * the only things available then), but negated
-			 * it means "none"
-			 * (note "none" contains none of "iavkgc")
-			 */
-			for (num = 0; num < NUM_DISCLOSURE_OPTIONS; num++) {
-				if (negated)
-				    flags.end_disclose[num] = DISCLOSE_NO_WITHOUT_PROMPT;
-			 	else flags.end_disclose[num] = DISCLOSE_PROMPT_DEFAULT_YES;
-			}
-			return;
-		}
-		if (negated) {
+
+		op = string_for_opt(opts, TRUE);
+		if (op && negated) {
 			bad_negation("disclose", TRUE);
 			return;
 		}
+		/* "disclose" without a value means "all with prompting"
+		   and negated means "none without prompting" */
+		if (!op || !strcmpi(op, "all") || !strcmpi(op, "none")) {
+			if (op && !strcmpi(op, "none")) negated = TRUE;
+			for (num = 0; num < NUM_DISCLOSURE_OPTIONS; num++)
+			    flags.end_disclose[num] = negated ?
+						DISCLOSE_NO_WITHOUT_PROMPT :
+						DISCLOSE_PROMPT_DEFAULT_YES;
+			return;
+		}
+
 		num = 0;
 		prefix_val = -1;
 		while (*op && num < sizeof flags.end_disclose - 1) {
@@ -1889,6 +1965,17 @@ goodfruit:
 		} else if (negated) bad_negation(fullname, TRUE);
 		return;
 	}
+	fullname = "subkeyvalue";
+	if (match_optname(opts, fullname, 5, TRUE)) {
+		if (negated) bad_negation(fullname, FALSE);
+		else {
+#if defined(WIN32CON)
+			op = string_for_opt(opts, 0);
+			map_subkeyvalue(op);
+#endif
+		}
+		return;
+	}
 	/* WINCAP
 	 * tile_width:nn */
 	fullname = "tile_width";
@@ -1930,7 +2017,6 @@ goodfruit:
 		} else if (negated) bad_negation(fullname, TRUE);
 		return;
 	}
-
 	fullname = "windowtype";
 	if (match_optname(opts, fullname, 3, TRUE)) {
 	    if (negated) {
@@ -1985,6 +2071,26 @@ goodfruit:
 			default:
 				badoption(opts);
 		}
+		return;
+	}
+
+	fullname = "menu_headings";
+	if (match_optname(opts, fullname, 12, TRUE)) {
+		if (negated) {
+			bad_negation(fullname, FALSE);
+			return;
+		}
+		else if (!(opts = string_for_env_opt(fullname, opts, FALSE))) {
+			return;
+		}
+		if (!strcmpi(opts,"bold"))
+			iflags.menu_headings = ATR_BOLD;
+		else if (!strcmpi(opts,"inverse"))
+			iflags.menu_headings = ATR_INVERSE;
+		else if (!strcmpi(opts,"underline"))
+			iflags.menu_headings = ATR_ULINE;
+		else
+			badoption(opts);
 		return;
 	}
 
@@ -2104,9 +2210,6 @@ goodfruit:
 			    else lan_mail_finish();
 			}
 #endif
-			else if ((boolopt[i].addr) == &iflags.num_pad)
-			    number_pad(iflags.num_pad ? 1 : 0);
-
 			else if ((boolopt[i].addr) == &flags.lit_corridor) {
 			    /*
 			     * All corridor squares seen via night vision or
@@ -2280,7 +2383,7 @@ doset()
 	start_menu(tmpwin);
 
 	any.a_void = 0;
- add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_BOLD,
+ add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
 		 "Booleans (selecting will toggle value):", MENU_UNSELECTED);
 	any.a_int = 0;
 	/* first list any other non-modifiable booleans, then modifiable ones */
@@ -2296,6 +2399,8 @@ doset()
 #endif
 		    if (is_wc_option(boolopt[i].name) &&
 			!wc_supported(boolopt[i].name)) continue;
+		    if (is_wc2_option(boolopt[i].name) &&
+			!wc2_supported(boolopt[i].name)) continue;
 		    any.a_int = (pass == 0) ? 0 : i + 1;
 		    if (!iflags.menu_tab_sep)
 			Sprintf(buf, "%s%-13s [%s]",
@@ -2312,7 +2417,7 @@ doset()
 	indexoffset = boolcount;
 	any.a_void = 0;
 	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
- add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_BOLD,
+ add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
 		 "Compounds (selecting will prompt for new value):",
 		 MENU_UNSELECTED);
 
@@ -2347,13 +2452,24 @@ doset()
 		    	else if (is_wc_option(compopt[i].name) &&
 					!wc_supported(compopt[i].name))
 		    		continue;
+		    	else if (is_wc2_option(compopt[i].name) &&
+					!wc2_supported(compopt[i].name))
+		    		continue;
 		    	else
 				doset_add_menu(tmpwin, compopt[i].name,
 					(pass == DISP_IN_GAME) ? 0 : indexoffset);
 		}
+#ifdef AUTOPICKUP_EXCEPTIONS
+	any.a_int = -1;
+	Sprintf(buf, "autopickup exceptions (%d currently set)",
+		count_ape_maps((int *)0, (int *)0));
+	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+
+#endif /* AUTOPICKUP_EXCEPTIONS */
 #ifdef PREFIXES_IN_USE
+	any.a_void = 0;
 	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
- add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_BOLD,
+	add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
 		 "Variable playground locations:", MENU_UNSELECTED);
 	for (i = 0; i < PREFIX_COUNT; i++)
 		doset_add_menu(tmpwin, fqn_prefix_names[i], 0);
@@ -2369,12 +2485,19 @@ doset()
 	     */
 	    for (pick_idx = 0; pick_idx < pick_cnt; ++pick_idx) {
 		opt_indx = pick_list[pick_idx].item.a_int - 1;
+#ifdef AUTOPICKUP_EXCEPTIONS
+		if (opt_indx == -2) {
+		    special_handling("autopickup_exception",
+		    			setinitial, fromfile);
+		} else
+#endif
 		if (opt_indx < boolcount) {
 		    /* boolean option */
 		    Sprintf(buf, "%s%s", *boolopt[opt_indx].addr ? "!" : "",
 			    boolopt[opt_indx].name);
 		    parseoptions(buf, setinitial, fromfile);
-		    if (wc_supported(boolopt[opt_indx].name))
+		    if (wc_supported(boolopt[opt_indx].name) ||
+		    	wc2_supported(boolopt[opt_indx].name))
 			preference_update(boolopt[opt_indx].name);
 		} else {
 		    /* compound option */
@@ -2390,7 +2513,8 @@ doset()
 			/* pass the buck */
 			parseoptions(buf, setinitial, fromfile);
 		    }
-		    if (wc_supported(compopt[opt_indx].name))
+		    if (wc_supported(compopt[opt_indx].name) ||
+			wc2_supported(compopt[opt_indx].name))
 			preference_update(compopt[opt_indx].name);
 		}
 	    }
@@ -2415,8 +2539,12 @@ boolean setinitial,setfromfile;
     char buf[BUFSZ];
     boolean retval = FALSE;
     
-    /* Special handling of menustyle, pickup_burden, and pickup_types,
-       disclose, runmode, and msg_window options. */
+    /* Special handling of menustyle, pickup_burden, pickup_types,
+     * disclose, runmode, msg_window, menu_headings, and number_pad options.
+#ifdef AUTOPICKUP_EXCEPTIONS
+     * Also takes care of interactive autopickup_exception_handling changes.
+#endif
+     */
     if (!strcmp("menustyle", optname)) {
 	const char *style_name;
 	menu_item *style_pick = (menu_item *)0;
@@ -2599,6 +2727,153 @@ boolean setinitial,setfromfile;
 	}
 	destroy_nhwindow(tmpwin);
         retval = TRUE;
+    } else if (!strcmp("number_pad", optname)) {
+	static const char *npchoices[3] =
+		{"0 (off)", "1 (on)", "2 (on, DOS compatible)"};
+	const char *npletters = "abc";
+	menu_item *mode_pick = (menu_item *)0;
+
+	tmpwin = create_nhwindow(NHW_MENU);
+	start_menu(tmpwin);
+	for (i = 0; i < SIZE(npchoices); i++) {
+		any.a_int = i + 1;
+		add_menu(tmpwin, NO_GLYPH, &any, npletters[i], 0,
+			 ATR_NONE, npchoices[i], MENU_UNSELECTED);
+        }
+	end_menu(tmpwin, "Select number_pad mode:");
+	if (select_menu(tmpwin, PICK_ONE, &mode_pick) > 0) {
+		int mode = mode_pick->item.a_int - 1;
+		switch(mode) {
+			case 2:
+				iflags.num_pad = 1;
+				iflags.num_pad_mode = 1;
+				break;
+			case 1:
+				iflags.num_pad = 1;
+				iflags.num_pad_mode = 0;
+				break;
+			case 0:
+			default:
+				iflags.num_pad = 0;
+				iflags.num_pad_mode = 0;
+		}
+		free((genericptr_t)mode_pick);
+        }
+	destroy_nhwindow(tmpwin);
+        retval = TRUE;
+    } else if (!strcmp("menu_headings", optname)) {
+	static const char *mhchoices[3] = {"bold", "inverse", "underline"};
+	const char *npletters = "biu";
+	menu_item *mode_pick = (menu_item *)0;
+
+	tmpwin = create_nhwindow(NHW_MENU);
+	start_menu(tmpwin);
+	for (i = 0; i < SIZE(mhchoices); i++) {
+		any.a_int = i + 1;
+		add_menu(tmpwin, NO_GLYPH, &any, npletters[i], 0,
+			 ATR_NONE, mhchoices[i], MENU_UNSELECTED);
+        }
+	end_menu(tmpwin, "How to highlight menu headings:");
+	if (select_menu(tmpwin, PICK_ONE, &mode_pick) > 0) {
+		int mode = mode_pick->item.a_int - 1;
+		switch(mode) {
+			case 2:
+				iflags.menu_headings = ATR_ULINE;
+				break;
+			case 0:
+				iflags.menu_headings = ATR_BOLD;
+				break;
+			case 1:
+			default:
+				iflags.menu_headings = ATR_INVERSE;
+		}
+		free((genericptr_t)mode_pick);
+        }
+	destroy_nhwindow(tmpwin);
+        retval = TRUE;
+#ifdef AUTOPICKUP_EXCEPTIONS
+    } else if (!strcmp("autopickup_exception", optname)) {
+    	boolean retval;
+	int pick_cnt, pick_idx, opt_idx, pass;
+	int totalapes = 0, numapes[2] = {0,0};
+	menu_item *pick_list = (menu_item *)0;
+	anything any;
+	char apebuf[BUFSZ];
+	struct autopickup_exception *ape;
+	static const char *action_titles[] = {
+		"a", "add new autopickup exception",
+		"l", "list autopickup exceptions",
+		"r", "remove existing autopickup exception",
+		"e", "exit this menu",
+	};
+ape_again:
+	opt_idx = 0;
+	totalapes = count_ape_maps(&numapes[AP_LEAVE], &numapes[AP_GRAB]);
+	tmpwin = create_nhwindow(NHW_MENU);
+	start_menu(tmpwin);
+	any.a_int = 0;
+	for (i = 0; i < SIZE(action_titles) ; i += 2) {
+		any.a_int++;
+		if (!totalapes && (i >= 2 && i < 6)) continue;
+		add_menu(tmpwin, NO_GLYPH, &any, *action_titles[i],
+		      0, ATR_NONE, action_titles[i+1], MENU_UNSELECTED);
+        }
+	end_menu(tmpwin, "Do what?");
+	if ((pick_cnt = select_menu(tmpwin, PICK_ONE, &pick_list)) > 0) {
+		for (pick_idx = 0; pick_idx < pick_cnt; ++pick_idx) {
+			opt_idx = pick_list[pick_idx].item.a_int - 1;
+		}
+		free((genericptr_t)pick_list);
+		pick_list = (menu_item *)0;
+	}
+	destroy_nhwindow(tmpwin);
+	if (pick_cnt < 1) return FALSE;
+
+	if (opt_idx == 0) {	/* add new */
+		getlin("What new autopickup exception pattern?", &apebuf[1]);
+		if (apebuf[1] == '\033') return FALSE;
+		apebuf[0] = '"';
+		Strcat(apebuf,"\"");
+		add_autopickup_exception(apebuf);
+		goto ape_again;
+	} else if (opt_idx == 3) {
+		retval = TRUE;
+	} else {	/* remove */
+		tmpwin = create_nhwindow(NHW_MENU);
+		start_menu(tmpwin);
+		for (pass = AP_LEAVE; pass <= AP_GRAB; ++pass) {
+		    if (numapes[pass] == 0) continue;
+		    ape = iflags.autopickup_exceptions[pass];
+		    any.a_void = 0;
+		    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+				(pass == 0) ? "Never pickup" : "Always pickup",
+				MENU_UNSELECTED);
+		    for (i = 0; i < numapes[pass] && ape; i++) {
+			any.a_void = (opt_idx == 1) ? 0 : ape;
+			Sprintf(apebuf, "\"%s\"", ape->pattern);
+			add_menu(tmpwin, NO_GLYPH, &any,
+				0, 0, ATR_NONE, apebuf, MENU_UNSELECTED);
+			ape = ape->next;
+		    }
+		}
+		Sprintf(apebuf, "%s autopickup exceptions",
+			(opt_idx == 1) ? "List of" : "Remove which");
+		end_menu(tmpwin, apebuf);
+		pick_cnt = select_menu(tmpwin,
+					(opt_idx == 1) ?  PICK_NONE : PICK_ANY,
+					&pick_list);
+		if (pick_cnt > 0) {
+	    	    for (pick_idx = 0; pick_idx < pick_cnt; ++pick_idx)
+			remove_autopickup_exception(
+			 (struct autopickup_exception *)pick_list[pick_idx].item.a_void);
+	        }
+	        free((genericptr_t)pick_list);
+	        pick_list = (menu_item *)0;
+		destroy_nhwindow(tmpwin);
+		goto ape_again;
+	}
+	retval = TRUE;
+#endif /* AUTOPICKUP_EXCEPTIONS */
     }
     return retval;
 }
@@ -2635,6 +2910,11 @@ char *buf;
 				   defopt);
 	else if (!strcmp(optname,"align"))
 		Sprintf(buf, "%s", rolestring(flags.initalign, aligns, adj));
+#ifdef WIN32CON
+	else if (!strcmp(optname,"altkeyhandler"))
+		Sprintf(buf, "%s", iflags.altkeyhandler[0] ?
+			iflags.altkeyhandler : "default");
+#endif
 	else if (!strcmp(optname, "boulder"))
 		Sprintf(buf, "%c", iflags.bouldersym ?
 			iflags.bouldersym : oc_syms[(int)objects[BOULDER].oc_class]);
@@ -2718,6 +2998,12 @@ char *buf;
 		Sprintf(buf, "%s", to_be_done);
 	else if (!strcmp(optname, "menu_invert_all"))
 		Sprintf(buf, "%s", to_be_done);
+	else if (!strcmp(optname, "menu_headings")) {
+		Sprintf(buf, "%s", (iflags.menu_headings == ATR_BOLD) ?
+			"bold" :   (iflags.menu_headings == ATR_INVERSE) ?
+			"inverse" :   (iflags.menu_headings == ATR_ULINE) ?
+			"underline" : "unknown");
+	}
 	else if (!strcmp(optname, "menu_invert_page"))
 		Sprintf(buf, "%s", to_be_done);
 	else if (!strcmp(optname, "menu_last_page"))
@@ -2744,6 +3030,10 @@ char *buf;
 #endif
 	else if (!strcmp(optname, "name"))
 		Sprintf(buf, "%s", plname);
+	else if (!strcmp(optname, "number_pad"))
+		Sprintf(buf, "%s",
+			(!iflags.num_pad) ? "0=off" :
+			(iflags.num_pad_mode) ? "2=on, DOS compatible" : "1=on");
 	else if (!strcmp(optname, "objects"))
 		Sprintf(buf, "%s", to_be_done);
 	else if (!strcmp(optname, "packorder")) {
@@ -2862,13 +3152,115 @@ dotogglepickup()
 	flags.pickup = !flags.pickup;
 	if (flags.pickup) {
 	    oc_to_str(flags.pickup_types, ocl);
-	    Sprintf(buf, "ON, for %s objects", ocl[0] ? ocl : "all");
+	    Sprintf(buf, "ON, for %s objects%s", ocl[0] ? ocl : "all",
+#ifdef AUTOPICKUP_EXCEPTIONS
+			(iflags.autopickup_exceptions[AP_LEAVE] ||
+			 iflags.autopickup_exceptions[AP_GRAB]) ?
+			 ((count_ape_maps((int *)0, (int *)0) == 1) ?
+			    ", with one exception" : ", with some exceptions") :
+#endif
+			"");
 	} else {
 	    Strcpy(buf, "OFF");
 	}
 	pline("Autopickup: %s.", buf);
 	return 0;
 }
+
+#ifdef AUTOPICKUP_EXCEPTIONS
+int
+add_autopickup_exception(mapping)
+const char *mapping;
+{
+	struct autopickup_exception *ape, **apehead;
+	char text[256], *text2;
+	int textsize = 0;
+	boolean grab = FALSE;
+
+	if (sscanf(mapping, "\"%255[^\"]\"", text) == 1) {
+		text2 = &text[0];
+		if (*text2 == '<') {		/* force autopickup */
+			grab = TRUE;
+			++text2;
+		} else if (*text2 == '>') {	/* default - Do not pickup */
+			grab = FALSE;
+			++text2;
+		}
+		textsize = strlen(text2);
+		apehead = (grab) ? &iflags.autopickup_exceptions[AP_GRAB] :
+				   &iflags.autopickup_exceptions[AP_LEAVE];
+		ape = (struct autopickup_exception *)
+				alloc(sizeof(struct autopickup_exception));
+		ape->pattern = (char *) alloc(textsize+1);
+		Strcpy(ape->pattern, text2);
+		ape->grab = grab;
+		if (!*apehead) ape->next = (struct autopickup_exception *)0;
+		else ape->next = *apehead;
+		*apehead = ape;
+	} else {
+	    raw_print("syntax error in AUTOPICKUP_EXCEPTION");
+	    return 0;
+	}
+	return 1;
+}
+
+STATIC_OVL void
+remove_autopickup_exception(whichape)
+struct autopickup_exception *whichape;
+{
+    struct autopickup_exception *ape, *prev = 0;
+    int chain = whichape->grab ? AP_GRAB : AP_LEAVE;
+
+    for (ape = iflags.autopickup_exceptions[chain]; ape;) {
+	if (ape == whichape) {
+	    struct autopickup_exception *freeape = ape;
+	    ape = ape->next;
+	    if (prev) prev->next = ape;
+	    else iflags.autopickup_exceptions[chain] = ape;
+	    free(freeape->pattern);
+	    free(freeape);
+	} else {
+	    prev = ape;
+	    ape = ape->next;
+	}
+    }
+}
+
+STATIC_OVL int
+count_ape_maps(leave, grab)
+int *leave, *grab;
+{
+	struct autopickup_exception *ape;
+	int pass, totalapes, numapes[2] = {0,0};
+
+	for (pass = AP_LEAVE; pass <= AP_GRAB; ++pass) {
+		ape = iflags.autopickup_exceptions[pass];
+		while(ape) {
+			ape = ape->next;
+			numapes[pass]++;
+		}
+	}
+	totalapes = numapes[AP_LEAVE] + numapes[AP_GRAB];
+	if (leave) *leave = numapes[AP_LEAVE];
+	if (grab) *grab = numapes[AP_GRAB];
+	return totalapes;
+}
+
+void
+free_autopickup_exceptions()
+{
+	struct autopickup_exception *ape;
+	int pass;
+
+	for (pass = AP_LEAVE; pass <= AP_GRAB; ++pass) {
+		while((ape = iflags.autopickup_exceptions[pass]) != 0) {
+			free(ape->pattern);
+			iflags.autopickup_exceptions[pass] = ape->next;
+			free(ape);
+		}
+	}
+}
+#endif /* AUTOPICKUP_EXCEPTIONS */
 
 /* data for option_help() */
 static const char *opt_intro[] = {
@@ -3197,6 +3589,13 @@ struct wc_Opt wc_options[] = {
 	{(char *)0, 0L}
 };
 
+struct wc_Opt wc2_options[] = {
+	{"fullscreen", WC2_FULLSCREEN},
+	{"softkeyboard", WC2_SOFTKEYBOARD},
+	{"wraptext", WC2_WRAPTEXT},
+	{(char *)0, 0L}
+};
+
 
 /*
  * If a port wants to change or ensure that the
@@ -3245,7 +3644,7 @@ int status;
 {
 	int k = 0;
 	if (status < SET_IN_FILE || status > SET_IN_GAME) {
-		impossible("set_option_mod_status: status out of range %d.",
+		impossible("set_wc_option_mod_status: status out of range %d.",
 			   status);
 		return;
 	}
@@ -3283,6 +3682,63 @@ const char *optnam;
 	}
 	return FALSE;
 }
+
+
+/*
+ * You can set several wc2_options in one call to
+ * set_wc2_option_mod_status() by setting
+ * the appropriate bits for each option that you
+ * are setting in the optmask argument
+ * prior to calling.
+ *    example: set_wc2_option_mod_status(WC2_FULLSCREEN|WC2_SOFTKEYBOARD|WC2_WRAPTEXT, SET_IN_FILE);
+ */
+
+void
+set_wc2_option_mod_status(optmask, status)
+unsigned long optmask;
+int status;
+{
+	int k = 0;
+	if (status < SET_IN_FILE || status > SET_IN_GAME) {
+		impossible("set_wc2_option_mod_status: status out of range %d.",
+			   status);
+		return;
+	}
+	while (wc2_options[k].wc_name) {
+		if (optmask & wc2_options[k].wc_bit) {
+			set_option_mod_status(wc2_options[k].wc_name, status);
+		}
+		k++;
+	}
+}
+
+STATIC_OVL boolean
+is_wc2_option(optnam)
+const char *optnam;
+{
+	int k = 0;
+	while (wc2_options[k].wc_name) {
+		if (strcmp(wc2_options[k].wc_name, optnam) == 0)
+			return TRUE;
+		k++;
+	}
+	return FALSE;
+}
+
+STATIC_OVL boolean
+wc2_supported(optnam)
+const char *optnam;
+{
+	int k = 0;
+	while (wc2_options[k].wc_name) {
+		if (!strcmp(wc2_options[k].wc_name, optnam) &&
+		    (windowprocs.wincap2 & wc2_options[k].wc_bit))
+			return TRUE;
+		k++;
+	}
+	return FALSE;
+}
+
 
 STATIC_OVL void
 wc_set_font_name(wtype, fontname)

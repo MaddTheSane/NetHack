@@ -1,4 +1,4 @@
-/*	SCCS Id: @(#)hack.c	3.4	2003/01/08	*/
+/*	SCCS Id: @(#)hack.c	3.4	2003/04/30	*/
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -134,11 +134,13 @@ moverock()
 		switch(ttmp->ttyp) {
 		case LANDMINE:
 		    if (rn2(10)) {
-			pline("KAABLAMM!!!  %s %s land mine.",
-				Tobjnam(otmp, "trigger"),
-				ttmp->madeby_u ? "your" : "a");
 			obj_extract_self(otmp);
 			place_object(otmp, rx, ry);
+			unblock_point(sx, sy);
+			newsym(sx, sy);
+			pline("KAABLAMM!!!  %s %s land mine.",
+			      Tobjnam(otmp, "trigger"),
+			      ttmp->madeby_u ? "your" : "a");
 			blow_up_landmine(ttmp);
 			/* if the boulder remains, it should fill the pit */
 			fill_pit(u.ux, u.uy);
@@ -644,11 +646,17 @@ int mode;
 	    return FALSE;
 	}
     }
-    /* pick a path that does not require crossing a trap */
-    if (flags.run == 8 && mode != DO_MOVE) {
+    /* Pick travel path that does not require crossing a trap.
+     * Avoid water and lava using the usual running rules.
+     * (but not u.ux/u.uy because findtravelpath walks toward u.ux/u.uy) */
+    if (flags.run == 8 && mode != DO_MOVE && (x != u.ux || y != u.uy)) {
 	struct trap* t = t_at(x, y);
 
-	if (t && t->tseen) return FALSE;
+	if ((t && t->tseen) ||
+	    (!Levitation && !Flying &&
+	     !is_clinger(youmonst.data) &&
+	     (is_pool(x, y) || is_lava(x, y)) && levl[x][y].seenv))
+	    return FALSE;
     }
 
     ust = &levl[ux][uy];
@@ -705,6 +713,18 @@ static boolean
 findtravelpath(guess)
 boolean guess;
 {
+    /* if travel to adjacent, reachable location, use normal movement rules */
+    if (!guess && iflags.travel1 && distmin(u.ux, u.uy, u.tx, u.ty) == 1) {
+	flags.run = 0;
+	if (test_move(u.ux, u.uy, u.tx-u.ux, u.ty-u.uy, TEST_MOVE)) {
+	    u.dx = u.tx-u.ux;
+	    u.dy = u.ty-u.uy;
+	    nomul(0);
+	    iflags.travelcc.x = iflags.travelcc.y = -1;
+	    return TRUE;
+	}
+	flags.run = 8;
+    }
     if (u.tx != u.ux || u.ty != u.uy) {
 	xchar travel[COLNO][ROWNO];
 	xchar travelstepx[2][COLNO*ROWNO];
@@ -738,8 +758,10 @@ boolean guess;
 		int x = travelstepx[set][i];
 		int y = travelstepy[set][i];
 		static int ordered[] = { 0, 2, 4, 6, 1, 3, 5, 7 };
+		/* no diagonal movement for grid bugs */
+		int dirmax = u.umonnum == PM_GRID_BUG ? 4 : 8;
 
-		for (dir = 0; dir < 8; dir++) {
+		for (dir = 0; dir < dirmax; ++dir) {
 		    int nx = x+xdir[ordered[dir]];
 		    int ny = y+ydir[ordered[dir]];
 
@@ -766,6 +788,7 @@ boolean guess;
 				    nomul(0);
 				    /* reset run so domove run checks work */
 				    flags.run = 8;
+				    iflags.travelcc.x = iflags.travelcc.y = -1;
 				}
 				return TRUE;
 			    }
@@ -787,15 +810,25 @@ boolean guess;
 	/* if guessing, find best location in travel matrix and go there */
 	if (guess) {
 	    int px = tx, py = ty;	/* pick location */
-	    int dist, nxtdist;
+	    int dist, nxtdist, d2, nd2;
 
 	    dist = distmin(ux, uy, tx, ty);
+	    d2 = dist2(ux, uy, tx, ty);
 	    for (tx = 1; tx < COLNO; ++tx)
 		for (ty = 0; ty < ROWNO; ++ty)
 		    if (travel[tx][ty]) {
 			nxtdist = distmin(ux, uy, tx, ty);
-			if (nxtdist < dist && couldsee(tx, ty)) {
-			    px = tx; py = ty; dist = nxtdist;
+			if (nxtdist == dist && couldsee(tx, ty)) {
+			    nd2 = dist2(ux, uy, tx, ty);
+			    if (nd2 < d2) {
+				/* prefer non-zigzag path */
+				px = tx; py = ty;
+				d2 = nd2;
+			    }
+			} else if (nxtdist < dist && couldsee(tx, ty)) {
+			    px = tx; py = ty;
+			    dist = nxtdist;
+			    d2 = dist2(ux, uy, tx, ty);
 			}
 		    }
 
@@ -842,9 +875,11 @@ domove()
 
 	u_wipe_engr(rnd(5));
 
-	if (flags.travel)
+	if (flags.travel) {
 	    if (!findtravelpath(FALSE))
 		(void) findtravelpath(TRUE);
+	    iflags.travel1 = 0;
+	}
 
 	if(((wtcap = near_capacity()) >= OVERLOADED
 	    || (wtcap > SLT_ENCUMBER &&
@@ -1423,7 +1458,6 @@ void
 spoteffects(pick)
 boolean pick;
 {
-	register struct trap *trap;
 	register struct monst *mtmp;
 
 	if(u.uinwater) {
@@ -1481,11 +1515,16 @@ stillinwater:;
 	if(IS_SINK(levl[u.ux][u.uy].typ) && Levitation)
 		dosinkfall();
 #endif
-	if (pick && !in_steed_dismounting)
-		(void) pickup(1);
-	/* if dismounting, we'll check again later */
-	if ((trap = t_at(u.ux,u.uy)) != 0 && !in_steed_dismounting)
-		dotrap(trap, 0);	/* fall into pit, arrow trap, etc. */
+	if (!in_steed_dismounting) { /* if dismounting, we'll check again later */
+		struct trap *trap = t_at(u.ux, u.uy);
+		boolean pit;
+		pit = (trap && (trap->ttyp == PIT || trap->ttyp == SPIKED_PIT));
+		if (trap && pit)
+			dotrap(trap, 0);	/* fall into pit */
+		if (pick) (void) pickup(1);
+		if (trap && !pit)
+			dotrap(trap, 0);	/* fall into arrow trap, etc. */
+	}
 	if((mtmp = m_at(u.ux, u.uy)) && !u.uswallow) {
 		mtmp->mundetected = mtmp->msleeping = 0;
 		switch(mtmp->data->mlet) {
@@ -1797,7 +1836,8 @@ int
 dopickup()
 {
 	int count;
-	/* awful kludge to work around parse()'s pre-decrement */
+	struct trap *traphere = t_at(u.ux, u.uy);
+ 	/* awful kludge to work around parse()'s pre-decrement */
 	count = (multi || (save_cm && *save_cm == ',')) ? multi + 1 : 0;
 	multi = 0;	/* always reset */
 	/* uswallow case added by GAN 01/29/87 */
@@ -1850,6 +1890,20 @@ dopickup()
 		You("cannot reach the %s.", surface(u.ux,u.uy));
 		return(0);
 	}
+
+ 	if (traphere && traphere->tseen) {
+		/* Allow pickup from holes and trap doors that you escaped from
+		 * because that stuff is teetering on the edge just like you, but
+		 * not pits, because there is an elevation discrepancy with stuff
+		 * in pits.
+		 */
+		if ((traphere->ttyp == PIT || traphere->ttyp == SPIKED_PIT) &&
+		     (!u.utrap || (u.utrap && u.utraptype != TT_PIT))) {
+			You("cannot reach the bottom of the pit.");
+			return(0);
+		}
+	}
+
 	return (pickup(-count));
 }
 
@@ -1897,7 +1951,10 @@ lookaround()
 	if (IS_ROCK(levl[x][y].typ) || (levl[x][y].typ == ROOM) ||
 	    IS_AIR(levl[x][y].typ))
 	    continue;
-	else if (closed_door(x,y)) {
+	else if (closed_door(x,y) ||
+		 (mtmp && mtmp->m_ap_type == M_AP_FURNITURE &&
+		  (mtmp->mappearance == S_hcdoor ||
+		   mtmp->mappearance == S_vcdoor))) {
 	    if(x != u.ux && y != u.uy) continue;
 	    if(flags.run != 1) goto stop;
 	    goto bcorr;
@@ -2014,7 +2071,7 @@ nomul(nval)
 	u.uinvulnerable = FALSE;	/* Kludge to avoid ctrl-C bug -dlc */
 	u.usleep = 0;
 	multi = nval;
-	flags.travel = flags.mv = flags.run = 0;
+	flags.travel = iflags.travel1 = flags.mv = flags.run = 0;
 }
 
 /* called when a non-movement, multi-turn action has completed */
@@ -2102,7 +2159,7 @@ weight_cap()
 {
 	register long carrcap;
 
-	carrcap = (((ACURRSTR + ACURR(A_CON))/2)+1)*50;
+	carrcap = 25*(ACURRSTR + ACURR(A_CON)) + 50;
 	if (Upolyd) {
 		/* consistent with can_carry() in mon.c */
 		if (youmonst.data->mlet == S_NYMPH)

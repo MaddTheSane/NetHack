@@ -1,4 +1,4 @@
-/*	SCCS Id: @(#)teleport.c	3.4	2002/11/20	*/
+/*	SCCS Id: @(#)teleport.c	3.4	2003/08/11	*/
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -567,6 +567,7 @@ level_tele()
 	d_level newlevel;
 	const char *escape_by_flying = 0;	/* when surviving dest of -N */
 	char buf[BUFSZ];
+	boolean force_dest = FALSE;
 
 	if ((u.uhave.amulet || In_endgame(&u.uz) || In_sokoban(&u.uz))
 #ifdef WIZARD
@@ -586,7 +587,13 @@ level_tele()
 
 	    Strcpy(qbuf, "To what level do you want to teleport?");
 	    do {
-		if (++trycnt == 2) Strcat(qbuf, " [type a number]");
+		if (++trycnt == 2) {
+#ifdef WIZARD
+			if (wizard) Strcat(qbuf, " [type a number or ? for a menu]");
+			else
+#endif
+			Strcat(qbuf, " [type a number]");
+		}
 		getlin(qbuf, buf);
 		if (!strcmp(buf,"\033")) {	/* cancelled */
 		    if (Confusion && rnl(5)) {
@@ -600,6 +607,33 @@ level_tele()
 		    pline("Oops...");
 		    goto random_levtport;
 		}
+#ifdef WIZARD
+		if (wizard && !strcmp(buf,"?")) {
+		    schar destlev = 0;
+		    xchar destdnum = 0;
+
+		    if ((newlev = (int)print_dungeon(TRUE, &destlev, &destdnum))) {
+			newlevel.dnum = destdnum;
+			newlevel.dlevel = destlev;
+			if (In_endgame(&newlevel) && !In_endgame(&u.uz)) {
+				Sprintf(buf,
+				    "Destination is earth level");
+				if (!u.uhave.amulet) {
+					struct obj *obj;
+					obj = mksobj(AMULET_OF_YENDOR,
+							TRUE, FALSE);
+					if (obj) {
+						obj = addinv(obj);
+						Strcat(buf, " with the amulet");
+					}
+				}
+				assign_level(&newlevel, &earth_level);
+				pline("%s.", buf);
+			}
+			force_dest = TRUE;
+		    } else return;
+		} else
+#endif
 		if ((newlev = lev_by_name(buf)) == 0) newlev = atoi(buf);
 	    } while (!newlev && !digit(buf[0]) &&
 		     (buf[0] != '-' || !digit(buf[1])) &&
@@ -614,9 +648,14 @@ level_tele()
 		    is_silent(youmonst.data) ? "writhe" : "scream");
 		display_nhwindow(WIN_MESSAGE, FALSE);
 		You("cease to exist.");
+		if (invent) Your("possessions land on the %s with a thud.",
+				surface(u.ux, u.uy));
 		killer_format = NO_KILLER_PREFIX;
 		killer = "committed suicide";
 		done(DIED);
+		pline("An energized cloud of dust begins to coalesce.");
+		Your("body rematerializes%s.", invent ?
+			", and you gather up all your possessions" : "");
 		return;
 	    }
 
@@ -667,7 +706,7 @@ level_tele()
 
 	killer = 0;		/* still alive, so far... */
 
-	if (newlev < 0) {
+	if (newlev < 0 && !force_dest) {
 		if (*u.ushops0) {
 		    /* take unpaid inventory items off of shop bills */
 		    in_mklev = TRUE;	/* suppress map update */
@@ -730,6 +769,9 @@ level_tele()
 	} else if (u.uz.dnum == medusa_level.dnum &&
 	    newlev >= dungeons[u.uz.dnum].depth_start +
 						dunlevs_in_dungeon(&u.uz)) {
+#ifdef WIZARD
+	    if (!(wizard && force_dest))
+#endif
 	    find_hell(&newlevel);
 	} else {
 	    /* if invocation did not yet occur, teleporting into
@@ -752,6 +794,9 @@ level_tele()
 	     * we must translate newlev to a number relative to the
 	     * current dungeon.
 	     */
+#ifdef WIZARD
+	    if (!(wizard && force_dest))
+#endif
 	    get_level(&newlevel, newlev);
 	}
 	schedule_goto(&newlevel, FALSE, FALSE, 0, (char *)0, (char *)0);
@@ -930,16 +975,18 @@ register int x, y;
 }
 
 /* place a monster at a random location, typically due to teleport */
-void
-rloc(mtmp)
+/* return TRUE if successful, FALSE if not */
+boolean
+rloc(mtmp, suppress_impossible)
 struct monst *mtmp;	/* mx==0 implies migrating monster arrival */
+boolean suppress_impossible;
 {
 	register int x, y, trycount;
 
 #ifdef STEED
 	if (mtmp == u.usteed) {
 	    tele();
-	    return;
+	    return TRUE;
 	}
 #endif
 
@@ -973,11 +1020,13 @@ struct monst *mtmp;	/* mx==0 implies migrating monster arrival */
 		    goto found_xy;
 
 	/* level either full of monsters or somehow faulty */
-	impossible("rloc(): couldn't relocate monster");
-	return;
+	if (!suppress_impossible)
+		impossible("rloc(): couldn't relocate monster");
+	return FALSE;
 
  found_xy:
 	rloc_to(mtmp, x, y);
+	return TRUE;
 }
 
 STATIC_OVL void
@@ -992,7 +1041,7 @@ struct monst *mtmp;
 		rloc_to(mtmp, c.x, c.y);
 		return;
 	}
-	rloc(mtmp);
+	(void) rloc(mtmp, FALSE);
 }
 
 boolean
@@ -1026,7 +1075,7 @@ int in_sight;
 	     * the guard isn't going to come for it...
 	     */
 	    if (trap->once) mvault_tele(mtmp);
-	    else rloc(mtmp);
+	    else (void) rloc(mtmp, FALSE);
 
 	    if (in_sight) {
 		if (canseemon(mtmp))
@@ -1161,15 +1210,11 @@ register struct obj *obj;
 int
 random_teleport_level()
 {
-	int nlev, max_depth, min_depth;
+	int nlev, max_depth, min_depth,
+	    cur_depth = (int)depth(&u.uz);
 
 	if (!rn2(5) || Is_knox(&u.uz))
-		return (int)depth(&u.uz);
-
-	/* Get a random value relative to the current dungeon */
-	/* Range is 1 to current+3, current not counting */
-	nlev = rnd((int)depth(&u.uz) + 2);
-	if (nlev >= (int)depth(&u.uz)) nlev++;
+	    return cur_depth;
 
 	/* What I really want to do is as follows:
 	 * -- If in a dungeon that goes down, the new level is to be restricted
@@ -1186,10 +1231,20 @@ random_teleport_level()
 	 * above; endgame is handled in the caller due to its different
 	 * message ("disoriented").
 	 * --KAA
+	 * 3.4.2: explicitly handle quest here too, to fix the problem of
+	 * monsters sometimes level teleporting out of it into main dungeon.
+	 * Also prevent monsters reaching the Sanctum prior to invocation.
 	 */
-	min_depth = 1;
+	min_depth = In_quest(&u.uz) ? dungeons[u.uz.dnum].depth_start : 1;
 	max_depth = dunlevs_in_dungeon(&u.uz) +
 			(dungeons[u.uz.dnum].depth_start - 1);
+	/* can't reach the Sanctum if the invocation hasn't been performed */
+	if (Inhell && !u.uevent.invoked) max_depth -= 1;
+
+	/* Get a random value relative to the current dungeon */
+	/* Range is 1 to current+3, current not counting */
+	nlev = rn2(cur_depth + 3 - min_depth) + min_depth;
+	if (nlev >= cur_depth) nlev++;
 
 	if (nlev > max_depth) {
 	    nlev = max_depth;
@@ -1198,9 +1253,9 @@ random_teleport_level()
 	}
 	if (nlev < min_depth) {
 	    nlev = min_depth;
-	    if ((int)depth(&u.uz) == min_depth) {
-		nlev += rnd(3);
-		if (nlev > max_depth)
+	    if (nlev == cur_depth) {
+	        nlev += rnd(3);
+	        if (nlev > max_depth)
 		    nlev = max_depth;
 	    }
 	}
@@ -1224,12 +1279,12 @@ boolean give_feedback;
 	    if (give_feedback)
 		You("are no longer inside %s!", mon_nam(mtmp));
 	    unstuck(mtmp);
-	    rloc(mtmp);
+	    (void) rloc(mtmp, FALSE);
 	} else if (is_rider(mtmp->data) && rn2(13) &&
 		   enexto(&cc, u.ux, u.uy, mtmp->data))
 	    rloc_to(mtmp, cc.x, cc.y);
 	else
-	    rloc(mtmp);
+	    (void) rloc(mtmp, FALSE);
 	return TRUE;
 }
 

@@ -1,4 +1,4 @@
-/*	SCCS Id: @(#)fountain.c	3.4	2002/09/08	*/
+/*	SCCS Id: @(#)fountain.c	3.4	2003/03/23	*/
 /*	Copyright Scott R. Turner, srt@ucla, 10/27/86 */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -386,12 +386,13 @@ register struct obj *obj;
 		update_inventory();
 		levl[u.ux][u.uy].typ = ROOM;
 		levl[u.ux][u.uy].looted = 0;
-		if(Invisible) newsym(u.ux, u.uy);
+		newsym(u.ux, u.uy);
 		level.flags.nfountains--;
 		if(in_town(u.ux, u.uy))
 		    (void) angry_guards(FALSE);
 		return;
-	} else (void) get_wet(obj);
+	} else if (get_wet(obj) && !rn2(2))
+		return;
 
 	/* Acid and water don't mix */
 	if (obj->otyp == POT_ACID) {
@@ -530,8 +531,9 @@ drinksink()
 			else {
 				mtmp = makemon(&mons[PM_SEWER_RAT],
 						u.ux, u.uy, NO_MM_FLAGS);
-				pline("Eek!  There's %s in the sink!",
-					Blind ? "something squirmy" :
+				if (mtmp) pline("Eek!  There's %s in the sink!",
+					(Blind || !canspotmon(mtmp)) ?
+					"something squirmy" :
 					a_monnam(mtmp));
 			}
 			break;
@@ -548,7 +550,7 @@ drinksink()
 			      hcolor(OBJ_DESCR(objects[otmp->otyp])));
 			otmp->dknown = !(Blind || Hallucination);
 			otmp->quan++; /* Avoid panic upon useup() */
-			otmp->corpsenm = 1; /* kludge for docall() */
+			otmp->fromsink = 1; /* kludge for docall() */
 			(void) dopotion(otmp);
 			obfree(otmp, (struct obj *)0);
 			break;

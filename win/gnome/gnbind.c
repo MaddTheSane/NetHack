@@ -9,6 +9,7 @@
 
 #include "gnbind.h"
 #include "gnmain.h"
+#include "gnmenu.h"
 #include "gnaskstr.h"
 #include "gnyesno.h"
 
@@ -23,6 +24,7 @@ extern void tty_raw_print_bold(const char *);
 struct window_procs Gnome_procs = {
     "Gnome",
     WC_COLOR|WC_HILITE_PET|WC_INVERSE,
+    0L,
     gnome_init_nhwindows,
     gnome_player_selection,
     gnome_askname,
@@ -102,9 +104,10 @@ void gnome_init_nhwindows(int* argc, char** argv)
 #   error HACKDIR is not defined!
 #endif
   
-    /* Force wizard mode on for debugging */
-    //wizard = TRUE;
-    
+    // gnome/gtk is not reentrant
+    set_option_mod_status("ignintr", DISP_IN_GAME);
+    flags.ignintr = TRUE;
+
     iflags.window_inited = TRUE;
 
     /* gnome-specific window creation */
@@ -1017,7 +1020,7 @@ char yn_function(const char *ques, const char *choices, char default)
 char gnome_yn_function(const char *question, const char *choices,
 		CHAR_P def)
 {
-    char ch;
+    int ch;
     int result=-1;
     char message[BUFSZ];
     char yn_esc_map='\033';
@@ -1094,7 +1097,7 @@ int get_ext_cmd(void)
 */
 int gnome_get_ext_cmd()
 {
-    return -1;
+    return ghack_menu_ext_cmd();
 }
 
 
