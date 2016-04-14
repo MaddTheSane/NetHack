@@ -6,6 +6,9 @@
 #define GLOBAL_H
 
 #include <stdio.h>
+#if __STDC_VERSION__ >= 199901L || defined(USEC99BOOL)
+#include "c99bool.h"
+#endif
 
 #define BETA  /* development or beta testing [MRS] */
 
