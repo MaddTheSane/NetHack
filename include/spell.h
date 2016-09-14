@@ -11,9 +11,9 @@
 #define MAX_SPELL_STUDY 3
 
 struct spell {
-    short sp_id;  /* spell id (== object.otyp) */
-    xchar sp_lev; /* power level */
-    int sp_know;  /* knowlege of spell */
+    short sp_id;  /**< spell id (== object.otyp) */
+    xchar sp_lev; /**< power level */
+    int sp_know;  /**< knowlege of spell */
 };
 
 /* levels of memory destruction with a scroll of amnesia */

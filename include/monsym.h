@@ -45,7 +45,7 @@
 #define S_FUNGUS        32
 #define S_GNOME         33
 #define S_GIANT         34
-#define S_invisible     35      /* non-class present in def_monsyms[] */
+#define S_invisible     35      /**< non-class present in def_monsyms[] */
 #define S_JABBERWOCK    36
 #define S_KOP           37
 #define S_LICH          38
@@ -74,7 +74,7 @@
 #define S_MIMIC_DEF     60
 /* clang-format on */
 
-#define MAXMCLASSES 61 /* number of monster classes */
+#define MAXMCLASSES 61 /**< number of monster classes */
 
 /*
  * Default characters for monsters.  These correspond to the monster classes

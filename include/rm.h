@@ -237,11 +237,11 @@ struct symdef {
 
 struct symparse {
     unsigned range;
-#define SYM_CONTROL 1 /* start/finish markers */
-#define SYM_PCHAR 2   /* index into showsyms  */
-#define SYM_OC 3      /* index into oc_syms   */
-#define SYM_MON 4     /* index into monsyms   */
-#define SYM_OTH 5     /* misc                 */
+#define SYM_CONTROL 1 /**< start/finish markers */
+#define SYM_PCHAR 2   /**< index into showsyms  */
+#define SYM_OC 3      /**< index into oc_syms   */
+#define SYM_MON 4     /**< index into monsyms   */
+#define SYM_OTH 5     /**< misc                 */
     int idx;
     const char *name;
 };
@@ -253,23 +253,23 @@ struct symparse {
 
 /* linked list of symsets and their characteristics */
 struct symsetentry {
-    struct symsetentry *next; /* next in list                         */
-    char *name;               /* ptr to symset name                   */
-    char *desc;               /* ptr to description                   */
-    int idx;                  /* an index value                       */
-    int handling;             /* known handlers value                 */
-    Bitfield(nocolor, 1);     /* don't use color if set               */
-    Bitfield(primary, 1);     /* restricted for use as primary set    */
-    Bitfield(rogue, 1);       /* restricted for use as rogue lev set  */
+    struct symsetentry *next; /**< next in list                         */
+    char *name;               /**< ptr to symset name                   */
+    char *desc;               /**< ptr to description                   */
+    int idx;                  /**< an index value                       */
+    int handling;             /**< known handlers value                 */
+    Bitfield(nocolor, 1);     /**< don't use color if set               */
+    Bitfield(primary, 1);     /**< restricted for use as primary set    */
+    Bitfield(rogue, 1);       /**< restricted for use as rogue lev set  */
                               /* 5 free bits */
 };
 
 /*
  * Graphics sets for display symbols
  */
-#define DEFAULT_GRAPHICS 0 /* regular characters: '-', '+', &c */
-#define PRIMARY 0          /* primary graphics set        */
-#define ROGUESET 1         /* rogue graphics set          */
+#define DEFAULT_GRAPHICS 0 /**< regular characters: '-', '+', &c */
+#define PRIMARY 0          /**< primary graphics set        */
+#define ROGUESET 1         /**< rogue graphics set          */
 #define NUM_GRAPHICS 2
 
 /*
@@ -281,7 +281,7 @@ struct symsetentry {
 #define H_IBM 1
 #define H_DEC 2
 
-extern const struct symdef defsyms[MAXPCHARS]; /* defaults */
+extern const struct symdef defsyms[MAXPCHARS]; /**< defaults */
 extern const struct symdef def_warnsyms[WARNCOUNT];
 extern int currentgraphics; /* from drawing.c */
 extern nhsym showsyms[];
@@ -299,7 +299,7 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 #define D_CLOSED 4
 #define D_LOCKED 8
 #define D_TRAPPED 16
-#define D_SECRET 32 /* only used by sp_lev.c, NOT in rm-struct */
+#define D_SECRET 32 /**< only used by sp_lev.c, NOT in rm-struct */
 
 /*
  * Some altars are considered as shrines, so we need a flag.
@@ -380,7 +380,7 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 #define ICED_POOL 8
 #define ICED_MOAT 16
 
-/*
+/**
  * The structure describing a coordinate position.
  * Before adding fields, remember that this will significantly affect
  * the size of temporary files and save files.
@@ -389,17 +389,17 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
  * must be updated to consider the field.
  */
 struct rm {
-    int glyph;               /* what the hero thinks is there */
-    schar typ;               /* what is really there */
-    uchar seenv;             /* seen vector */
-    Bitfield(flags, 5);      /* extra information for typ */
-    Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
-    Bitfield(lit, 1);        /* speed hack for lit rooms */
-    Bitfield(waslit, 1);     /* remember if a location was lit */
+    int glyph;               /**< what the hero thinks is there */
+    schar typ;               /**< what is really there */
+    uchar seenv;             /**< seen vector */
+    Bitfield(flags, 5);      /**< extra information for typ */
+    Bitfield(horizontal, 1); /**< wall/door/etc is horiz. (more typ info) */
+    Bitfield(lit, 1);        /**< speed hack for lit rooms */
+    Bitfield(waslit, 1);     /**< remember if a location was lit */
 
-    Bitfield(roomno, 6); /* room # for special rooms */
-    Bitfield(edge, 1);   /* marks boundaries for special rooms*/
-    Bitfield(candig, 1); /* Exception to Can_dig_down; was a trapdoor */
+    Bitfield(roomno, 6); /**< room # for special rooms */
+    Bitfield(edge, 1);   /**< marks boundaries for special rooms*/
+    Bitfield(candig, 1); /**< Exception to Can_dig_down; was a trapdoor */
 };
 
 #define SET_TYPLIT(x, y, ttyp, llit)                              \
@@ -515,24 +515,24 @@ struct damage {
     schar typ;
 };
 
-/* for bones levels:  identify the dead character, who might have died on
+/** for bones levels:  identify the dead character, who might have died on
    an existing bones level; if so, most recent victim will be first in list */
 struct cemetery {
-    struct cemetery *next; /* next struct is previous dead character... */
-    /* "plname" + "-ROLe" + "-RACe" + "-GENder" + "-ALIgnment" + \0 */
+    struct cemetery *next; /**< next struct is previous dead character... */
+    /** "plname" + "-ROLe" + "-RACe" + "-GENder" + "-ALIgnment" + \0 */
     char who[PL_NSIZ + 4 * (1 + 3) + 1];
-    /* death reason, same as in score/log file */
+    /** death reason, same as in score/log file */
     char how[100 + 1]; /* [DTHSZ+1] */
-    /* date+time in string of digits rather than binary */
+    /** date+time in string of digits rather than binary */
     char when[4 + 2 + 2 + 2 + 2 + 2 + 1]; /* "YYYYMMDDhhmmss\0" */
-    /* final resting place spot */
+    /** final resting place spot */
     schar frpx, frpy;
     boolean bonesknown;
 };
 
 struct levelflags {
-    uchar nfountains; /* number of fountains on level */
-    uchar nsinks;     /* number of sinks on the level */
+    uchar nfountains; /**< number of fountains on level */
+    uchar nsinks;     /**< number of sinks on the level */
     /* Several flags that give hints about what's on the level */
     Bitfield(has_shop, 1);
     Bitfield(has_vault, 1);
@@ -547,18 +547,18 @@ struct levelflags {
     Bitfield(noteleport, 1);
     Bitfield(hardfloor, 1);
     Bitfield(nommap, 1);
-    Bitfield(hero_memory, 1);   /* hero has memory */
-    Bitfield(shortsighted, 1);  /* monsters are shortsighted */
-    Bitfield(graveyard, 1);     /* has_morgue, but remains set */
-    Bitfield(sokoban_rules, 1); /* fill pits and holes w/ boulders */
+    Bitfield(hero_memory, 1);   /**< hero has memory */
+    Bitfield(shortsighted, 1);  /**< monsters are shortsighted */
+    Bitfield(graveyard, 1);     /**< has_morgue, but remains set */
+    Bitfield(sokoban_rules, 1); /**< fill pits and holes w/ boulders */
 
     Bitfield(is_maze_lev, 1);
     Bitfield(is_cavernous_lev, 1);
-    Bitfield(arboreal, 1);     /* Trees replace rock */
-    Bitfield(wizard_bones, 1); /* set if level came from a bones file
+    Bitfield(arboreal, 1);     /**< Trees replace rock */
+    Bitfield(wizard_bones, 1); /**< set if level came from a bones file
                                   which was created in wizard mode (or
                                   normal mode descendant of such) */
-    Bitfield(corrmaze, 1);     /* Whether corridors are used for the maze
+    Bitfield(corrmaze, 1);     /**< Whether corridors are used for the maze
                                   rather than ROOM */
 };
 

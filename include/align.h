@@ -5,17 +5,17 @@
 #ifndef ALIGN_H
 #define ALIGN_H
 
-typedef schar aligntyp; /* basic alignment type */
+typedef schar aligntyp; /**< basic alignment type */
 
-typedef struct align { /* alignment & record */
+typedef struct align { /**< alignment & record */
     aligntyp type;
     int record;
 } align;
 
-/* bounds for "record" -- respect initial alignments of 10 */
+/** bounds for "record" -- respect initial alignments of 10 */
 #define ALIGNLIM (10L + (moves / 200L))
 
-#define A_NONE (-128) /* the value range of type */
+#define A_NONE (-128) /**< the value range of type */
 
 #define A_CHAOTIC (-1)
 #define A_NEUTRAL 0

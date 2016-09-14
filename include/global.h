@@ -269,20 +269,20 @@ extern long *alloc(unsigned int);  /* alloc.c */
 extern char *dupstr(const char *); /* ditto */
 #endif
 
-/* Used for consistency checks of various data files; declare it here so
+/** Used for consistency checks of various data files; declare it here so
    that utility programs which include config.h but not hack.h can see it. */
 struct version_info {
-    unsigned long incarnation;   /* actual version number */
-    unsigned long feature_set;   /* bitmask of config settings */
-    unsigned long entity_count;  /* # of monsters and objects */
-    unsigned long struct_sizes1; /* size of key structs */
-    unsigned long struct_sizes2; /* size of more key structs */
+    unsigned long incarnation;   /**< actual version number */
+    unsigned long feature_set;   /**< bitmask of config settings */
+    unsigned long entity_count;  /**< # of monsters and objects */
+    unsigned long struct_sizes1; /**< size of key structs */
+    unsigned long struct_sizes2; /**< size of more key structs */
 };
 
 struct savefile_info {
-    unsigned long sfi1; /* compression etc. */
-    unsigned long sfi2; /* miscellaneous */
-    unsigned long sfi3; /* thirdparty */
+    unsigned long sfi1; /**< compression etc. */
+    unsigned long sfi2; /**< miscellaneous */
+    unsigned long sfi3; /**< thirdparty */
 };
 #ifdef NHSTDC
 #define SFI1_EXTERNALCOMP (1UL)

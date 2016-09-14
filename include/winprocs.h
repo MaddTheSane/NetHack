@@ -9,12 +9,12 @@
 
 /* NB: this MUST match chain_procs below */
 struct window_procs {
-    const char *name;     /* Names should start with [a-z].  Names must
+    const char *name;     /**< Names should start with [a-z].  Names must
                            * not start with '-'.  Names starting with
                            * '+' are reserved for processors. */
-    unsigned long wincap; /* window port capability options supported */
+    unsigned long wincap; /**< window port capability options supported */
     unsigned long
-        wincap2; /* additional window port capability options supported */
+        wincap2; /**< additional window port capability options supported */
     void (*win_init_nhwindows)(int *, char **);
     void (*win_player_selection)(void);
     void (*win_askname)(void);

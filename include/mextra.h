@@ -71,14 +71,14 @@ struct fakecorridor {
 };
 
 struct egd {
-    int fcbeg, fcend;     /* fcend: first unused pos */
-    int vroom;            /* room number of the vault */
-    xchar gdx, gdy;       /* goal of guard's walk */
-    xchar ogx, ogy;       /* guard's last position */
-    d_level gdlevel;      /* level (& dungeon) guard was created in */
-    xchar warncnt;        /* number of warnings to follow */
-    Bitfield(gddone, 1);  /* true iff guard has released player */
-    Bitfield(witness, 2); /* the guard saw you do something */
+    int fcbeg, fcend;     /**< fcend: first unused pos */
+    int vroom;            /**< room number of the vault */
+    xchar gdx, gdy;       /**< goal of guard's walk */
+    xchar ogx, ogy;       /**< guard's last position */
+    d_level gdlevel;      /**< level (& dungeon) guard was created in */
+    xchar warncnt;        /**< number of warnings to follow */
+    Bitfield(gddone, 1);  /**< true iff guard has released player */
+    Bitfield(witness, 2); /**< the guard saw you do something */
     Bitfield(unused, 5);
     struct fakecorridor fakecorr[FCSIZ];
 };
@@ -87,14 +87,14 @@ struct egd {
  **	formerly epri.h -- temple priest extension
  */
 struct epri {
-    aligntyp shralign; /* alignment of priest's shrine */
-    schar shroom;      /* index in rooms */
-    coord shrpos;      /* position of shrine */
-    d_level shrlevel;  /* level (& dungeon) of shrine */
-    long intone_time,  /* used to limit verbosity  +*/
-        enter_time,    /*+ of temple entry messages */
-        hostile_time,  /* forbidding feeling */
-        peaceful_time; /* sense of peace */
+    aligntyp shralign; /**< alignment of priest's shrine */
+    schar shroom;      /**< index in rooms */
+    coord shrpos;      /**< position of shrine */
+    d_level shrlevel;  /**< level (& dungeon) of shrine */
+    long intone_time,  /**< used to limit verbosity  +*/
+        enter_time,    /**<+ of temple entry messages */
+        hostile_time,  /**< forbidding feeling */
+        peaceful_time; /**< sense of peace */
 };
 /* note: roaming priests (no shrine) switch from ispriest to isminion
    (and emin extension) */
@@ -102,35 +102,35 @@ struct epri {
 /***
  **	formerly eshk.h -- shopkeeper extension
  */
-#define REPAIR_DELAY 5 /* minimum delay between shop damage & repair */
+#define REPAIR_DELAY 5 /**< minimum delay between shop damage & repair */
 #define BILLSZ 200
 
 struct bill_x {
     unsigned bo_id;
     boolean useup;
-    long price; /* price per unit */
-    long bquan; /* amount used up */
+    long price; /**< price per unit */
+    long bquan; /**< amount used up */
 };
 
 struct eshk {
-    long robbed;          /* amount stolen by most recent customer */
-    long credit;          /* amount credited to customer */
-    long debit;           /* amount of debt for using unpaid items */
-    long loan;            /* shop-gold picked (part of debit) */
-    int shoptype;         /* the value of rooms[shoproom].rtype */
-    schar shoproom;       /* index in rooms; set by inshop() */
-    schar unused;         /* to force alignment for stupid compilers */
-    boolean following;    /* following customer since he owes us sth */
-    boolean surcharge;    /* angry shk inflates prices */
-    boolean dismiss_kops; /* pacified shk sends kops away */
-    coord shk;            /* usual position shopkeeper */
-    coord shd;            /* position shop door */
-    d_level shoplevel;    /* level (& dungeon) of his shop */
-    int billct;           /* no. of entries of bill[] in use */
+    long robbed;          /**< amount stolen by most recent customer */
+    long credit;          /**< amount credited to customer */
+    long debit;           /**< amount of debt for using unpaid items */
+    long loan;            /**< shop-gold picked (part of debit) */
+    int shoptype;         /**< the value of rooms[shoproom].rtype */
+    schar shoproom;       /**< index in rooms; set by inshop() */
+    schar unused;         /**< to force alignment for stupid compilers */
+    boolean following;    /**< following customer since he owes us sth */
+    boolean surcharge;    /**< angry shk inflates prices */
+    boolean dismiss_kops; /**< pacified shk sends kops away */
+    coord shk;            /**< usual position shopkeeper */
+    coord shd;            /**< position shop door */
+    d_level shoplevel;    /**< level (& dungeon) of his shop */
+    int billct;           /**< no. of entries of bill[] in use */
     struct bill_x bill[BILLSZ];
     struct bill_x *bill_p;
-    int visitct;            /* nr of visits by most recent customer */
-    char customer[PL_NSIZ]; /* most recent customer */
+    int visitct;            /**< nr of visits by most recent customer */
+    char customer[PL_NSIZ]; /**< most recent customer */
     char shknam[PL_NSIZ];
 };
 
@@ -138,8 +138,8 @@ struct eshk {
  **	formerly emin.h -- minion extension
  */
 struct emin {
-    aligntyp min_align; /* alignment of minion */
-    boolean renegade;   /* hostile co-aligned priest or Angel */
+    aligntyp min_align; /**< alignment of minion */
+    boolean renegade;   /**< hostile co-aligned priest or Angel */
 };
 
 /***
@@ -156,16 +156,16 @@ struct emin {
 #define TABU 7
 
 struct edog {
-    long droptime;            /* moment dog dropped object */
-    unsigned dropdist;        /* dist of dropped obj from @ */
-    int apport;               /* amount of training */
-    long whistletime;         /* last time he whistled */
-    long hungrytime;          /* will get hungry at this time */
-    coord ogoal;              /* previous goal location */
-    int abuse;                /* track abuses to this pet */
-    int revivals;             /* count pet deaths */
-    int mhpmax_penalty;       /* while starving, points reduced */
-    Bitfield(killed_by_u, 1); /* you attempted to kill him */
+    long droptime;            /**< moment dog dropped object */
+    unsigned dropdist;        /**< dist of dropped obj from @ */
+    int apport;               /**< amount of training */
+    long whistletime;         /**< last time he whistled */
+    long hungrytime;          /**< will get hungry at this time */
+    coord ogoal;              /**< previous goal location */
+    int abuse;                /**< track abuses to this pet */
+    int revivals;             /**< count pet deaths */
+    int mhpmax_penalty;       /**< while starving, points reduced */
+    Bitfield(killed_by_u, 1); /**< you attempted to kill him */
 };
 
 /***
@@ -178,7 +178,7 @@ struct mextra {
     struct eshk *eshk;
     struct emin *emin;
     struct edog *edog;
-    int mcorpsenm; /* obj->corpsenm for mimic posing as statue or corpse */
+    int mcorpsenm; /**< obj->corpsenm for mimic posing as statue or corpse */
 };
 
 #define MNAME(mon) ((mon)->mextra->mname)

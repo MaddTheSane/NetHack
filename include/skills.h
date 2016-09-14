@@ -91,7 +91,7 @@
 
 #define practice_needed_to_advance(level) ((level) * (level) *20)
 
-/* The hero's skill in various weapons. */
+/** The hero's skill in various weapons. */
 struct skills {
     xchar skill;
     xchar max_skill;

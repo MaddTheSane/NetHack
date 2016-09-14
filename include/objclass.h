@@ -8,26 +8,26 @@
 /* definition of a class of objects */
 
 struct objclass {
-    short oc_name_idx;  /* index of actual name */
-    short oc_descr_idx; /* description when name unknown */
-    char *oc_uname;     /* called by user */
+    short oc_name_idx;  /**< index of actual name */
+    short oc_descr_idx; /**< description when name unknown */
+    char *oc_uname;     /**< called by user */
     Bitfield(oc_name_known, 1);
-    Bitfield(oc_merge, 1);      /* merge otherwise equal objects */
-    Bitfield(oc_uses_known, 1); /* obj->known affects full description */
-                                /* otherwise, obj->dknown and obj->bknown */
-                                /* tell all, and obj->known should always */
-                                /* be set for proper merging behavior */
-    Bitfield(oc_pre_discovered, 1); /* Already known at start of game; */
+    Bitfield(oc_merge, 1);      /**< merge otherwise equal objects */
+    Bitfield(oc_uses_known, 1); /**< obj->known affects full description */
+                                /**< otherwise, obj->dknown and obj->bknown */
+                                /**< tell all, and obj->known should always */
+                                /**< be set for proper merging behavior */
+    Bitfield(oc_pre_discovered, 1); /**< Already known at start of game; */
     /* won't be listed as a discovery. */
-    Bitfield(oc_magic, 1);   /* inherently magical object */
-    Bitfield(oc_charged, 1); /* may have +n or (n) charges */
-    Bitfield(oc_unique, 1);  /* special one-of-a-kind object */
-    Bitfield(oc_nowish, 1);  /* cannot wish for this object */
+    Bitfield(oc_magic, 1);   /**< inherently magical object */
+    Bitfield(oc_charged, 1); /**< may have +n or (n) charges */
+    Bitfield(oc_unique, 1);  /**< special one-of-a-kind object */
+    Bitfield(oc_nowish, 1);  /**< cannot wish for this object */
 
     Bitfield(oc_big, 1);
-#define oc_bimanual oc_big /* for weapons & tools used as weapons */
-#define oc_bulky oc_big    /* for armor */
-    Bitfield(oc_tough, 1); /* hard gems/rings */
+#define oc_bimanual oc_big /**< for weapons & tools used as weapons */
+#define oc_bulky oc_big    /**< for armor */
+    Bitfield(oc_tough, 1); /**< hard gems/rings */
 
     Bitfield(oc_dir, 2);
 #define NODIR 1     /* for wands/spells: non-directional */
@@ -41,7 +41,7 @@ struct objclass {
     /*Bitfield(oc_subtyp,3);*/ /* Now too big for a bitfield... see below */
 
     Bitfield(oc_material, 5);
-#define LIQUID 1 /* currently only for venom */
+#define LIQUID 1 /**< currently only for venom */
 #define WAX 2
 #define VEGGY 3 /* foodstuffs */
 #define FLESH 4 /*   ditto    */
@@ -50,13 +50,13 @@ struct objclass {
 #define LEATHER 7
 #define WOOD 8
 #define BONE 9
-#define DRAGON_HIDE 10 /* not leather! */
-#define IRON 11        /* Fe - includes steel */
-#define METAL 12       /* Sn, &c. */
-#define COPPER 13      /* Cu - includes brass */
-#define SILVER 14      /* Ag */
-#define GOLD 15        /* Au */
-#define PLATINUM 16    /* Pt */
+#define DRAGON_HIDE 10 /**< not leather! */
+#define IRON 11        /**< Fe - includes steel */
+#define METAL 12       /**< Sn, &c. */
+#define COPPER 13      /**< Cu - includes brass */
+#define SILVER 14      /**< Ag */
+#define GOLD 15        /**< Au */
+#define PLATINUM 16    /**< Pt */
 #define MITHRIL 17
 #define PLASTIC 18
 #define GLASS 19
@@ -82,9 +82,9 @@ struct objclass {
      || is_corrodeable(otmp))
 
     schar oc_subtyp;
-#define oc_skill oc_subtyp  /* Skills of weapons, spellbooks, tools, gems */
-#define oc_armcat oc_subtyp /* for armor */
-#define ARM_SHIELD 1        /* needed for special wear function */
+#define oc_skill oc_subtyp  /**< Skills of weapons, spellbooks, tools, gems */
+#define oc_armcat oc_subtyp /**< for armor */
+#define ARM_SHIELD 1        /**< needed for special wear function */
 #define ARM_HELM 2
 #define ARM_GLOVES 3
 #define ARM_BOOTS 4
@@ -92,25 +92,25 @@ struct objclass {
 #define ARM_SHIRT 6
 #define ARM_SUIT 0
 
-    uchar oc_oprop; /* property (invis, &c.) conveyed */
-    char oc_class;  /* object class */
-    schar oc_delay; /* delay when using such an object */
-    uchar oc_color; /* color of the object */
+    uchar oc_oprop; /**< property (invis, &c.) conveyed */
+    char oc_class;  /**< object class */
+    schar oc_delay; /**< delay when using such an object */
+    uchar oc_color; /**< color of the object */
 
-    short oc_prob;            /* probability, used in mkobj() */
-    unsigned short oc_weight; /* encumbrance (1 cn = 0.1 lb.) */
-    short oc_cost;            /* base cost in shops */
+    short oc_prob;            /**< probability, used in mkobj() */
+    unsigned short oc_weight; /**< encumbrance (1 cn = 0.1 lb.) */
+    short oc_cost;            /**< base cost in shops */
     /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
     schar oc_wsdam, oc_wldam; /* max small/large monster damage */
     schar oc_oc1, oc_oc2;
-#define oc_hitbon oc_oc1 /* weapons: "to hit" bonus */
+#define oc_hitbon oc_oc1 /*<* weapons: "to hit" bonus */
 
-#define a_ac oc_oc1     /* armor class, used in ARM_BONUS in do.c */
-#define a_can oc_oc2    /* armor: used in mhitu.c */
-#define oc_level oc_oc2 /* books: spell level */
+#define a_ac oc_oc1     /**< armor class, used in ARM_BONUS in do.c */
+#define a_can oc_oc2    /**< armor: used in mhitu.c */
+#define oc_level oc_oc2 /**< books: spell level */
 
-    unsigned short oc_nutrition; /* food value */
+    unsigned short oc_nutrition; /**< food value */
 };
 
 struct class_sym {
@@ -120,8 +120,8 @@ struct class_sym {
 };
 
 struct objdescr {
-    const char *oc_name;  /* actual name */
-    const char *oc_descr; /* description when name unknown */
+    const char *oc_name;  /**< actual name */
+    const char *oc_descr; /**< description when name unknown */
 };
 
 extern NEARDATA struct objclass objects[];
@@ -131,7 +131,7 @@ extern NEARDATA struct objdescr obj_descr[];
  * All objects have a class. Make sure that all classes have a corresponding
  * symbol below.
  */
-#define RANDOM_CLASS 0 /* used for generating random objects */
+#define RANDOM_CLASS 0 /**< used for generating random objects */
 #define ILLOBJ_CLASS 1
 #define WEAPON_CLASS 2
 #define ARMOR_CLASS 3
@@ -141,7 +141,7 @@ extern NEARDATA struct objdescr obj_descr[];
 #define FOOD_CLASS 7
 #define POTION_CLASS 8
 #define SCROLL_CLASS 9
-#define SPBOOK_CLASS 10 /* actually SPELL-book */
+#define SPBOOK_CLASS 10 /**< actually SPELL-book */
 #define WAND_CLASS 11
 #define COIN_CLASS 12
 #define GEM_CLASS 13
@@ -160,13 +160,13 @@ extern NEARDATA struct objdescr obj_descr[];
 
 #if 0 /* moved to decl.h so that makedefs.c won't see them */
 extern const struct class_sym
-        def_oc_syms[MAXOCLASSES];       /* default class symbols */
-extern uchar oc_syms[MAXOCLASSES];      /* current class symbols */
+        def_oc_syms[MAXOCLASSES];       /**< default class symbols */
+extern uchar oc_syms[MAXOCLASSES];      /**< current class symbols */
 #endif
 
 /* Default definitions of all object-symbols (must match classes above). */
 
-#define ILLOBJ_SYM ']' /* also used for mimics */
+#define ILLOBJ_SYM ']' /**< also used for mimics */
 #define WEAPON_SYM ')'
 #define ARMOR_SYM '['
 #define RING_SYM '='

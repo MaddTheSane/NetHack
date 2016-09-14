@@ -8,21 +8,21 @@
 #define TRAP_H
 
 union vlaunchinfo {
-    short v_launch_otyp; /* type of object to be triggered */
-    coord v_launch2;     /* secondary launch point (for boulders) */
-    uchar v_conjoined;   /* conjoined pit locations */
-    short v_tnote;       /* boards: 12 notes        */
+    short v_launch_otyp; /**< type of object to be triggered */
+    coord v_launch2;     /**< secondary launch point (for boulders) */
+    uchar v_conjoined;   /**< conjoined pit locations */
+    short v_tnote;       /**< boards: 12 notes        */
 };
 
 struct trap {
     struct trap *ntrap;
     xchar tx, ty;
-    d_level dst; /* destination for portals */
+    d_level dst; /**< destination for portals */
     coord launch;
     Bitfield(ttyp, 5);
     Bitfield(tseen, 1);
     Bitfield(once, 1);
-    Bitfield(madeby_u, 1); /* So monsters may take offence when you trap
+    Bitfield(madeby_u, 1); /**< So monsters may take offence when you trap
                               them.	Recognizing who made the trap isn't
                               completely unreasonable, everybody has
                               their own style.  This flag is also needed
@@ -46,9 +46,9 @@ extern struct trap *ftrap;
 #define ANIMATE_SPELL 2
 
 /* reasons for animate_statue's failure */
-#define AS_OK 0            /* didn't fail */
-#define AS_NO_MON 1        /* makemon failed */
-#define AS_MON_IS_UNIQUE 2 /* statue monster is unique */
+#define AS_OK 0            /**< didn't fail */
+#define AS_NO_MON 1        /**< makemon failed */
+#define AS_MON_IS_UNIQUE 2 /**< statue monster is unique */
 
 /* Note: if adding/removing a trap, adjust trap_engravings[] in mklev.c */
 

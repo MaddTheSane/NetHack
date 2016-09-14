@@ -32,16 +32,16 @@ E NEARDATA int nroom;
 E NEARDATA int nsubroom;
 E NEARDATA int occtime;
 
-#define WARNCOUNT 6 /* number of different warning levels */
+#define WARNCOUNT 6 /**< number of different warning levels */
 E nhsym warnsyms[WARNCOUNT];
-E NEARDATA int warn_obj_cnt; /* count of monsters meeting criteria */
+E NEARDATA int warn_obj_cnt; /**< count of monsters meeting criteria */
 
 E int x_maze_max, y_maze_max;
 E int otg_temp;
 
 E NEARDATA int in_doagain;
 
-E struct dgn_topology { /* special dungeon levels for speed */
+E struct dgn_topology { /**< special dungeon levels for speed */
     d_level d_oracle_level;
     d_level d_bigroom_level; /* unused */
     d_level d_rogue_level;
@@ -55,7 +55,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_orcus_level;
     d_level d_baalzebub_level; /* unused */
     d_level d_asmodeus_level;  /* unused */
-    d_level d_portal_level;    /* only in goto_level() [do.c] */
+    d_level d_portal_level;    /**< only in goto_level() [do.c] */
     d_level d_sanctum_level;
     d_level d_earth_level;
     d_level d_water_level;
@@ -104,13 +104,13 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define sokoend_level           (dungeon_topology.d_sokoend_level)
 /* clang-format on */
 
-E NEARDATA stairway dnstair, upstair; /* stairs up and down */
+E NEARDATA stairway dnstair, upstair; /**< stairs up and down */
 #define xdnstair (dnstair.sx)
 #define ydnstair (dnstair.sy)
 #define xupstair (upstair.sx)
 #define yupstair (upstair.sy)
 
-E NEARDATA stairway dnladder, upladder; /* ladders up and down */
+E NEARDATA stairway dnladder, upladder; /**< ladders up and down */
 #define xdnladder (dnladder.sx)
 #define ydnladder (dnladder.sy)
 #define xupladder (upladder.sx)
@@ -118,7 +118,7 @@ E NEARDATA stairway dnladder, upladder; /* ladders up and down */
 
 E NEARDATA stairway sstairs;
 
-E NEARDATA dest_area updest, dndest; /* level-change destination areas */
+E NEARDATA dest_area updest, dndest; /**< level-change destination areas */
 
 E NEARDATA coord inv_pos;
 E NEARDATA dungeon dungeons[];
@@ -129,7 +129,7 @@ E NEARDATA s_level *sp_levchn;
 E struct q_score quest_status;
 
 E NEARDATA char pl_character[PL_CSIZ];
-E NEARDATA char pl_race; /* character's race */
+E NEARDATA char pl_race; /**< character's race */
 
 E NEARDATA char pl_fruit[PL_FSIZ];
 E NEARDATA struct fruit *ffruit;
@@ -141,15 +141,15 @@ E struct linfo level_info[MAXLINFO];
 
 E NEARDATA struct sinfo {
     int gameover;  /* self explanatory? */
-    int stopprint; /* inhibit further end of game disclosure */
+    int stopprint; /**< inhibit further end of game disclosure */
 #ifdef HANGUPHANDLING
-    volatile int done_hup; /* SIGHUP or moral equivalent received
+    volatile int done_hup; /**< SIGHUP or moral equivalent received
                             * -- no more screen output */
-    int preserve_locks;    /* don't remove level files prior to exit */
+    int preserve_locks;    /**< don't remove level files prior to exit */
 #endif
-    int something_worth_saving; /* in case of panic */
-    int panicking;              /* `panic' is in progress */
-    int exiting;                /* an exit handler is executing */
+    int something_worth_saving; /**< in case of panic */
+    int panicking;              /**< `panic' is in progress */
+    int exiting;                /**< an exit handler is executing */
     int in_moveloop;
     int in_impossible;
 #ifdef PANICLOG
@@ -175,24 +175,24 @@ E NEARDATA int doorindex;
 E NEARDATA char *save_cm;
 
 E NEARDATA struct kinfo {
-    struct kinfo *next; /* chain of delayed killers */
-    int id;             /* uprop keys to ID a delayed killer */
-    int format;         /* one of the killer formats */
+    struct kinfo *next; /**< chain of delayed killers */
+    int id;             /**< uprop keys to ID a delayed killer */
+    int format;         /**< one of the killer formats */
 #define KILLED_BY_AN 0
 #define KILLED_BY 1
 #define NO_KILLER_PREFIX 2
-    char name[BUFSZ]; /* actual killer name */
+    char name[BUFSZ]; /**< actual killer name */
 } killer;
 
 E long done_money;
 E const char *configfile;
-E char lastconfigfile[BUFSZ]; /* used for messaging */
+E char lastconfigfile[BUFSZ]; /**< used for messaging */
 E NEARDATA char plname[PL_NSIZ];
 E NEARDATA char dogname[];
 E NEARDATA char catname[];
 E NEARDATA char horsename[];
 E char preferred_pet;
-E const char *occtxt; /* defined when occupation != NULL */
+E const char *occtxt; /**< defined when occupation != NULL */
 E const char *nomovemsg;
 E char lock[];
 
@@ -220,17 +220,17 @@ E NEARDATA boolean in_steed_dismounting;
 E const int shield_static[];
 
 #include "spell.h"
-E NEARDATA struct spell spl_book[]; /* sized in decl.c */
+E NEARDATA struct spell spl_book[]; /**< sized in decl.c */
 
 #include "color.h"
 #ifdef TEXTCOLOR
 E const int zapcolors[];
 #endif
 
-E const struct class_sym def_oc_syms[MAXOCLASSES]; /* default class symbols */
-E uchar oc_syms[MAXOCLASSES];                      /* current class symbols */
-E const struct class_sym def_monsyms[MAXMCLASSES]; /* default class symbols */
-E uchar monsyms[MAXMCLASSES];                      /* current class symbols */
+E const struct class_sym def_oc_syms[MAXOCLASSES]; /**< default class symbols */
+E uchar oc_syms[MAXOCLASSES];                      /**< current class symbols */
+E const struct class_sym def_monsyms[MAXMCLASSES]; /**< default class symbols */
+E uchar monsyms[MAXMCLASSES];                      /**< current class symbols */
 
 #include "obj.h"
 E NEARDATA struct obj *invent, *uarm, *uarmc, *uarmh, *uarms, *uarmg, *uarmf,
@@ -282,7 +282,7 @@ E NEARDATA struct c_color_names {
 #define NH_WHITE c_color_names.c_white
 #define NH_ORANGE c_color_names.c_orange
 
-/* The names of the colors used for gems, etc. */
+/** The names of the colors used for gems, etc. */
 E const char *c_obj_colors[];
 
 E struct c_common_strings {
@@ -302,7 +302,7 @@ E struct c_common_strings {
 #define vision_clears c_common_strings.c_vision_clears
 #define the_your c_common_strings.c_the_your
 
-/* material strings */
+/** material strings */
 E const char *materialnm[];
 
 /* Monster name articles */
@@ -319,8 +319,8 @@ E const char *materialnm[];
 #define EXACT_NAME 0x0F
 
 /* Vision */
-E NEARDATA boolean vision_full_recalc; /* TRUE if need vision recalc */
-E NEARDATA char **viz_array;           /* could see/in sight row pointers */
+E NEARDATA boolean vision_full_recalc; /**< TRUE if need vision recalc */
+E NEARDATA char **viz_array;           /**< could see/in sight row pointers */
 
 /* Window system stuff */
 E NEARDATA winid WIN_MESSAGE;
@@ -340,9 +340,9 @@ E NEARDATA winid WIN_MAP, WIN_INVEN;
 
 E char toplines[];
 #ifndef TCAP_H
-E struct tc_gbl_data {   /* also declared in tcap.h */
-    char *tc_AS, *tc_AE; /* graphics start and end (tty font swapping) */
-    int tc_LI, tc_CO;    /* lines and columns */
+E struct tc_gbl_data {   /**< also declared in tcap.h */
+    char *tc_AS, *tc_AE; /**< graphics start and end (tty font swapping) */
+    int tc_LI, tc_CO;    /**< lines and columns */
 } tc_gbl_data;
 #define AS tc_gbl_data.tc_AS
 #define AE tc_gbl_data.tc_AE
@@ -396,7 +396,7 @@ struct autopickup_exception {
 };
 
 struct plinemsg_type {
-    xchar msgtype;  /* one of MSGTYP_foo */
+    xchar msgtype;  /**< one of MSGTYP_foo */
     struct nhregex *regex;
     char *pattern;
     struct plinemsg_type *next;

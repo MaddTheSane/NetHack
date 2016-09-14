@@ -5,9 +5,9 @@
 #ifndef WINTYPE_H
 #define WINTYPE_H
 
-typedef int winid; /* a window identifier */
+typedef int winid; /**< a window identifier */
 
-/* generic parameter - must not be any larger than a pointer */
+/** generic parameter - must not be any larger than a pointer */
 typedef union any {
     genericptr_t a_void;
     struct obj *a_obj;
@@ -31,34 +31,34 @@ typedef union any {
 /* symbolic names for the data types housed in anything */
 /* clang-format off */
 #define ANY_VOID         1
-#define ANY_OBJ          2      /* struct obj */
-#define ANY_MONST        3      /* struct monst (not used) */
-#define ANY_INT          4      /* int */
-#define ANY_CHAR         5      /* char */
-#define ANY_UCHAR        6      /* unsigned char */
-#define ANY_SCHAR        7      /* signed char */
-#define ANY_UINT         8      /* unsigned int */
-#define ANY_LONG         9      /* long */
-#define ANY_ULONG       10      /* unsigned long */
-#define ANY_IPTR        11      /* pointer to int */
-#define ANY_UPTR        12      /* pointer to unsigned int */
-#define ANY_LPTR        13      /* pointer to long */
-#define ANY_ULPTR       14      /* pointer to unsigned long */
-#define ANY_STR         15      /* pointer to null-terminated char string */
-#define ANY_MASK32      16      /* 32-bit mask (stored as unsigned long) */
+#define ANY_OBJ          2      /**< struct obj */
+#define ANY_MONST        3      /**< struct monst (not used) */
+#define ANY_INT          4      /**< int */
+#define ANY_CHAR         5      /**< char */
+#define ANY_UCHAR        6      /**< unsigned char */
+#define ANY_SCHAR        7      /**< signed char */
+#define ANY_UINT         8      /**< unsigned int */
+#define ANY_LONG         9      /**< long */
+#define ANY_ULONG       10      /**< unsigned long */
+#define ANY_IPTR        11      /**< pointer to int */
+#define ANY_UPTR        12      /**< pointer to unsigned int */
+#define ANY_LPTR        13      /**< pointer to long */
+#define ANY_ULPTR       14      /**< pointer to unsigned long */
+#define ANY_STR         15      /**< pointer to null-terminated char string */
+#define ANY_MASK32      16      /**< 32-bit mask (stored as unsigned long) */
 /* clang-format on */
 
-/* menu return list */
+/** menu return list */
 typedef struct mi {
-    anything item; /* identifier */
-    long count;    /* count */
+    anything item; /**< identifier */
+    long count;    /**< count */
 } menu_item;
 #define MENU_ITEM_P struct mi
 
 /* select_menu() "how" argument types */
-#define PICK_NONE 0 /* user picks nothing (display only) */
-#define PICK_ONE 1  /* only pick one */
-#define PICK_ANY 2  /* can pick any amount */
+#define PICK_NONE 0 /**< user picks nothing (display only) */
+#define PICK_ONE 1  /**< only pick one */
+#define PICK_ANY 2  /**< can pick any amount */
 
 /* window types */
 /* any additional port specific types should be defined in win*.h */
@@ -80,7 +80,7 @@ typedef struct mi {
 #define CLICK_1 1
 #define CLICK_2 2
 
-/* invalid winid */
+/** invalid winid */
 #define WIN_ERR ((winid) -1)
 
 /* menu window keyboard commands (may be mapped) */

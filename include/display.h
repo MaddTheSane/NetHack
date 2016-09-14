@@ -13,7 +13,7 @@
 #include "mondata.h" /* for mindless() */
 #endif
 
-/*
+/**
  * vobj_at()
  *
  * Returns the head of the list of objects that the player can see
@@ -21,7 +21,7 @@
  */
 #define vobj_at(x, y) (level.objects[x][y])
 
-/*
+/**
  * sensemon()
  *
  * Returns true if the hero can sense the given monster.  This includes
@@ -41,7 +41,7 @@
 #define sensemon(mon) \
     (tp_sensemon(mon) || Detect_monsters || MATCH_WARN_OF_MON(mon))
 
-/*
+/**
  * mon_warning() is used to warn of any dangerous monsters in your
  * vicinity, and a glyph representing the warning level is displayed.
  */
@@ -50,7 +50,7 @@
     (Warning && !(mon)->mpeaceful && (distu((mon)->mx, (mon)->my) < 100) \
      && (((int) ((mon)->m_lev / 4)) >= context.warnlevel))
 
-/*
+/**
  * mon_visible()
  *
  * Returns true if the hero can see the monster.  It is assumed that the
@@ -64,7 +64,7 @@
      && !mon->mundetected             /* AND 2. not an undetected hider */ \
      && !(mon->mburied || u.uburied)) /* AND 3. neither you nor it is buried */
 
-/*
+/**
  * see_with_infrared()
  *
  * This function is true if the player can see a monster using infravision.
@@ -76,7 +76,7 @@
     (!Blind && Infravision && mon && infravisible(mon->data) \
      && couldsee(mon->mx, mon->my))
 
-/*
+/**
  * canseemon()
  *
  * This is the globally used canseemon().  It is not called within the display
@@ -88,7 +88,7 @@
                   : (cansee(mon->mx, mon->my) || see_with_infrared(mon))) \
      && mon_visible(mon))
 
-/*
+/**
  * canspotmon(mon)
  *
  * This function checks whether you can either see a monster or sense it by
@@ -97,7 +97,7 @@
  */
 #define canspotmon(mon) (canseemon(mon) || sensemon(mon))
 
-/* knowninvisible(mon)
+/** knowninvisible(mon)
  * This one checks to see if you know a monster is both there and invisible.
  * 1) If you can see the monster and have see invisible, it is assumed the
  * monster is transparent, but visible in some manner.  (Earlier versions of
@@ -114,7 +114,7 @@
          || (!Blind && (HTelepat & ~INTRINSIC)                            \
              && distu(mon->mx, mon->my) <= (BOLT_LIM * BOLT_LIM))))
 
-/*
+/**
  * is_safepet(mon)
  *
  * A special case check used in attack() and domove().  Placing the
@@ -188,7 +188,7 @@
 /* Total number of cmap indices in the shield_static[] array. */
 #define SHIELD_COUNT 21
 
-/*
+/**
  * display_self()
  *
  * Display the hero.  It is assumed that all checks necessary to determine

@@ -10,66 +10,66 @@
 #ifndef WINDOW_STRUCTS
 #define WINDOW_STRUCTS
 
-/* menu structure */
+/** menu structure */
 typedef struct tty_mi {
     struct tty_mi *next;
-    anything identifier; /* user identifier */
-    long count;          /* user count */
-    char *str;           /* description string (including accelerator) */
-    int attr;            /* string attribute */
-    boolean selected;    /* TRUE if selected by user */
-    char selector;       /* keyboard accelerator */
-    char gselector;      /* group accelerator */
+    anything identifier; /**< user identifier */
+    long count;          /**< user count */
+    char *str;           /**< description string (including accelerator) */
+    int attr;            /**< string attribute */
+    boolean selected;    /**< TRUE if selected by user */
+    char selector;       /**< keyboard accelerator */
+    char gselector;      /**< group accelerator */
 } tty_menu_item;
 
-/* descriptor for tty-based windows */
+/** descriptor for tty-based windows */
 struct WinDesc {
-    int flags;           /* window flags */
-    xchar type;          /* type of window */
-    boolean active;      /* true if window is active */
-    short offx, offy;    /* offset from topleft of display */
-    long rows, cols;     /* dimensions */
-    long curx, cury;     /* current cursor position */
-    long maxrow, maxcol; /* the maximum size used -- for MENU wins */
+    int flags;           /**< window flags */
+    xchar type;          /**< type of window */
+    boolean active;      /**< true if window is active */
+    short offx, offy;    /**< offset from topleft of display */
+    long rows, cols;     /**< dimensions */
+    long curx, cury;     /**< current cursor position */
+    long maxrow, maxcol; /**< the maximum size used -- for MENU wins */
     /* maxcol is also used by WIN_MESSAGE for */
     /* tracking the ^P command */
-    short *datlen;         /* allocation size for *data */
-    char **data;           /* window data [row][column] */
-    char *morestr;         /* string to display instead of default */
-    tty_menu_item *mlist;  /* menu information (MENU) */
-    tty_menu_item **plist; /* menu page pointers (MENU) */
-    long plist_size;       /* size of allocated plist (MENU) */
-    long npages;           /* number of pages in menu (MENU) */
-    long nitems;           /* total number of items (MENU) */
-    short how;             /* menu mode - pick 1 or N (MENU) */
-    char menu_ch;          /* menu char (MENU) */
+    short *datlen;         /**< allocation size for *data */
+    char **data;           /**< window data [row][column] */
+    char *morestr;         /**< string to display instead of default */
+    tty_menu_item *mlist;  /**< menu information (MENU) */
+    tty_menu_item **plist; /**< menu page pointers (MENU) */
+    long plist_size;       /**< size of allocated plist (MENU) */
+    long npages;           /**< number of pages in menu (MENU) */
+    long nitems;           /**< total number of items (MENU) */
+    short how;             /**< menu mode - pick 1 or N (MENU) */
+    char menu_ch;          /**< menu char (MENU) */
 };
 
 /* window flags */
 #define WIN_CANCELLED 1
-#define WIN_STOP 1        /* for NHW_MESSAGE; stops output */
-#define WIN_LOCKHISTORY 2 /* for NHW_MESSAGE; suppress history updates */
+#define WIN_STOP 1        /**< for NHW_MESSAGE; stops output */
+#define WIN_LOCKHISTORY 2 /**< for NHW_MESSAGE; suppress history updates */
 
 /* descriptor for tty-based displays -- all the per-display data */
 struct DisplayDesc {
-    short rows, cols; /* width and height of tty display */
-    short curx, cury; /* current cursor position on the screen */
+    short rows, cols; /**< width and height of tty display */
+    short curx, cury; /**< current cursor position on the screen */
 #ifdef TEXTCOLOR
-    int color; /* current color */
+    int color; /**< current color */
 #endif
-    int attrs;         /* attributes in effect */
-    int toplin;        /* flag for topl stuff */
-    int rawprint;      /* number of raw_printed lines since synch */
-    int inmore;        /* non-zero if more() is active */
-    int inread;        /* non-zero if reading a character */
-    int intr;          /* non-zero if inread was interrupted */
-    winid lastwin;     /* last window used for I/O */
-    char dismiss_more; /* extra character accepted at --More-- */
+    int attrs;         /**< attributes in effect */
+    int toplin;        /**< flag for topl stuff */
+    int rawprint;      /**< number of raw_printed lines since synch */
+    int inmore;        /**< non-zero if more() is active */
+    int inread;        /**< non-zero if reading a character */
+    int intr;          /**< non-zero if inread was interrupted */
+    winid lastwin;     /**< last window used for I/O */
+    char dismiss_more; /**< extra character accepted at --More-- */
 };
 
 #endif /* WINDOW_STRUCTS */
 
-#define MAXWIN 20 /* maximum number of windows, cop-out */
+#define MAXWIN 20 /**< maximum number of windows, cop-out */
 
 /* tty dependent window types */
 #ifdef NHW_BASE
@@ -84,10 +84,10 @@ extern winid BASE_WINDOW;
 
 extern struct WinDesc *wins[MAXWIN];
 
-extern struct DisplayDesc *ttyDisplay; /* the tty display descriptor */
+extern struct DisplayDesc *ttyDisplay; /**< the tty display descriptor */
 
-extern char morc;         /* last character typed to xwaitforspace */
-extern char defmorestr[]; /* default --more-- prompt */
+extern char morc;         /**< last character typed to xwaitforspace */
+extern char defmorestr[]; /**< default --more-- prompt */
 
 /* port specific external function references */
 

@@ -9,9 +9,9 @@
                           * typedef for "obj" in <sys/types.h> */
 
 union vptrs {
-    struct obj *v_nexthere;   /* floor location lists */
-    struct obj *v_ocontainer; /* point back to container */
-    struct monst *v_ocarry;   /* point back to carrying monst */
+    struct obj *v_nexthere;   /**< floor location lists */
+    struct obj *v_ocontainer; /**< point back to container */
+    struct monst *v_ocarry;   /**< point back to carrying monst */
 };
 
 /****
@@ -19,11 +19,11 @@ union vptrs {
  **	(see the note at the bottom of this file before adding oextra fields)
  */
 struct oextra {
-    char *oname;          /* ptr to name of object */
-    struct monst *omonst; /* ptr to attached monst struct */
-    unsigned *omid;       /* ptr to m_id */
-    long *olong;          /* ptr to misc long (temporary gold object) */
-    char *omailcmd;       /* response_cmd for mail deliver */
+    char *oname;          /**< ptr to name of object */
+    struct monst *omonst; /**< ptr to attached monst struct */
+    unsigned *omid;       /**< ptr to m_id */
+    long *olong;          /**< ptr to misc long (temporary gold object) */
+    char *omailcmd;       /**< response_cmd for mail deliver */
 };
 
 struct obj {
@@ -33,14 +33,14 @@ struct obj {
 #define ocontainer v.v_ocontainer
 #define ocarry v.v_ocarry
 
-    struct obj *cobj; /* contents list for containers */
+    struct obj *cobj; /**< contents list for containers */
     unsigned o_id;
     xchar ox, oy;
-    short otyp; /* object class number */
+    short otyp; /**< object class number */
     unsigned owt;
-    long quan; /* number of items */
+    long quan; /**< number of items */
 
-    schar spe; /* quality of weapon, armor or ring (+ or -)
+    schar spe; /**< quality of weapon, armor or ring (+ or -)
                   number of charges for wand ( >= -1 )
                   marks your eggs, tin variety and spinach tins
                   royal coffers for a court ( == 2)
@@ -50,75 +50,75 @@ struct obj {
 #define STATUE_HISTORIC 0x01
 #define STATUE_MALE 0x02
 #define STATUE_FEMALE 0x04
-    char oclass;    /* object class */
-    char invlet;    /* designation in inventory */
-    char oartifact; /* artifact array index */
+    char oclass;    /**< object class */
+    char invlet;    /**< designation in inventory */
+    char oartifact; /**< artifact array index */
 
-    xchar where;        /* where the object thinks it is */
-#define OBJ_FREE 0      /* object not attached to anything */
-#define OBJ_FLOOR 1     /* object on floor */
-#define OBJ_CONTAINED 2 /* object in a container */
-#define OBJ_INVENT 3    /* object in the hero's inventory */
-#define OBJ_MINVENT 4   /* object in a monster inventory */
-#define OBJ_MIGRATING 5 /* object sent off to another level */
-#define OBJ_BURIED 6    /* object buried */
-#define OBJ_ONBILL 7    /* object on shk bill */
+    xchar where;        /**< where the object thinks it is */
+#define OBJ_FREE 0      /**< object not attached to anything */
+#define OBJ_FLOOR 1     /**< object on floor */
+#define OBJ_CONTAINED 2 /**< object in a container */
+#define OBJ_INVENT 3    /**< object in the hero's inventory */
+#define OBJ_MINVENT 4   /**< object in a monster inventory */
+#define OBJ_MIGRATING 5 /**< object sent off to another level */
+#define OBJ_BURIED 6    /**< object buried */
+#define OBJ_ONBILL 7    /**< object on shk bill */
 #define NOBJ_STATES 8
-    xchar timed; /* # of fuses (timers) attached to this obj */
+    xchar timed; /**< # of fuses (timers) attached to this obj */
 
     Bitfield(cursed, 1);
     Bitfield(blessed, 1);
-    Bitfield(unpaid, 1);    /* on some bill */
-    Bitfield(no_charge, 1); /* if shk shouldn't charge for this */
-    Bitfield(known, 1);     /* exact nature known */
-    Bitfield(dknown, 1);    /* color or text known */
-    Bitfield(bknown, 1);    /* blessing or curse known */
-    Bitfield(rknown, 1);    /* rustproof or not known */
+    Bitfield(unpaid, 1);    /**< on some bill */
+    Bitfield(no_charge, 1); /**< if shk shouldn't charge for this */
+    Bitfield(known, 1);     /**< exact nature known */
+    Bitfield(dknown, 1);    /**< color or text known */
+    Bitfield(bknown, 1);    /**< blessing or curse known */
+    Bitfield(rknown, 1);    /**< rustproof or not known */
 
-    Bitfield(oeroded, 2);  /* rusted/burnt weapon/armor */
-    Bitfield(oeroded2, 2); /* corroded/rotted weapon/armor */
+    Bitfield(oeroded, 2);  /**< rusted/burnt weapon/armor */
+    Bitfield(oeroded2, 2); /**< corroded/rotted weapon/armor */
 #define greatest_erosion(otmp)                                 \
     (int)((otmp)->oeroded > (otmp)->oeroded2 ? (otmp)->oeroded \
                                              : (otmp)->oeroded2)
 #define MAX_ERODE 3
-#define orotten oeroded  /* rotten food */
-#define odiluted oeroded /* diluted potions */
+#define orotten oeroded  /**< rotten food */
+#define odiluted oeroded /**< diluted potions */
 #define norevive oeroded2
-    Bitfield(oerodeproof, 1); /* erodeproof weapon/armor */
-    Bitfield(olocked, 1);     /* object is locked */
-    Bitfield(obroken, 1);     /* lock has been broken */
-#define degraded_horn obroken /* unicorn horn will poly to non-magic */
-    Bitfield(otrapped, 1);    /* container is trapped */
+    Bitfield(oerodeproof, 1); /**< erodeproof weapon/armor */
+    Bitfield(olocked, 1);     /**< object is locked */
+    Bitfield(obroken, 1);     /**< lock has been broken */
+#define degraded_horn obroken /**< unicorn horn will poly to non-magic */
+    Bitfield(otrapped, 1);    /**< container is trapped */
 /* or accidental tripped rolling boulder trap */
-#define opoisoned otrapped /* object (weapon) is coated with poison */
+#define opoisoned otrapped /**< object (weapon) is coated with poison */
 
-    Bitfield(recharged, 3); /* number of times it's been recharged */
-#define on_ice recharged    /* corpse on ice */
-    Bitfield(lamplit, 1);   /* a light-source -- can be lit */
+    Bitfield(recharged, 3); /**< number of times it's been recharged */
+#define on_ice recharged    /**< corpse on ice */
+    Bitfield(lamplit, 1);   /**< a light-source -- can be lit */
     Bitfield(
         globby,
-        1); /* globby; will combine with like types on adjacent squares */
-    Bitfield(greased, 1);    /* covered with grease */
-    Bitfield(nomerge, 1);    /* set temporarily to prevent merging */
-    Bitfield(was_thrown, 1); /* thrown by hero since last picked up */
+        1); /**< globby; will combine with like types on adjacent squares */
+    Bitfield(greased, 1);    /**< covered with grease */
+    Bitfield(nomerge, 1);    /**< set temporarily to prevent merging */
+    Bitfield(was_thrown, 1); /**< thrown by hero since last picked up */
 
-    Bitfield(in_use, 1); /* for magic items before useup items */
-    Bitfield(bypass, 1); /* mark this as an object to be skipped by bhito() */
-    Bitfield(cknown, 1); /* contents of container assumed to be known */
-    Bitfield(lknown, 1); /* locked/unlocked status is known */
+    Bitfield(in_use, 1); /**< for magic items before useup items */
+    Bitfield(bypass, 1); /**< mark this as an object to be skipped by bhito() */
+    Bitfield(cknown, 1); /**< contents of container assumed to be known */
+    Bitfield(lknown, 1); /**< locked/unlocked status is known */
     /* 4 free bits */
 
-    int corpsenm;         /* type of corpse is mons[corpsenm] */
-#define leashmon corpsenm /* gets m_id of attached pet */
-#define fromsink corpsenm /* a potion from a sink */
-#define novelidx corpsenm /* 3.6.0 tribute - the index of the novel title */
+    int corpsenm;         /**< type of corpse is mons[corpsenm] */
+#define leashmon corpsenm /**< gets m_id of attached pet */
+#define fromsink corpsenm /**< a potion from a sink */
+#define novelidx corpsenm /**< 3.6.0 tribute - the index of the novel title */
 #define record_achieve_special corpsenm
-    int usecount;           /* overloaded for various things that tally */
-#define spestudied usecount /* # of times a spellbook has been studied */
-    unsigned oeaten;        /* nutrition left in food, if partly eaten */
-    long age;               /* creation date */
+    int usecount;           /**< overloaded for various things that tally */
+#define spestudied usecount /**< # of times a spellbook has been studied */
+    unsigned oeaten;        /**< nutrition left in food, if partly eaten */
+    long age;               /**< creation date */
     long owornmask;
-    struct oextra *oextra; /* pointer to oextra struct */
+    struct oextra *oextra; /**< pointer to oextra struct */
 };
 
 #define newobj() (struct obj *) alloc(sizeof(struct obj))
@@ -239,7 +239,7 @@ struct obj {
 #define is_gnomish_armor(otmp) (FALSE)
 
 /* Eggs and other food */
-#define MAX_EGG_HATCH_TIME 200 /* longest an egg can remain unhatched */
+#define MAX_EGG_HATCH_TIME 200 /**< longest an egg can remain unhatched */
 #define stale_egg(egg) \
     ((monstermoves - (egg)->age) > (2 * MAX_EGG_HATCH_TIME))
 #define ofood(o) ((o)->otyp == CORPSE || (o)->otyp == EGG || (o)->otyp == TIN)
@@ -275,32 +275,32 @@ struct obj {
     &mons[PM_GRAY_DRAGON + (obj)->otyp - GRAY_DRAGON_SCALE_MAIL]
 #define Dragon_to_scales(pm) (GRAY_DRAGON_SCALES + (pm - mons))
 
-/* Elven gear */
+/** Elven gear */
 #define is_elven_weapon(otmp)                                             \
     ((otmp)->otyp == ELVEN_ARROW || (otmp)->otyp == ELVEN_SPEAR           \
      || (otmp)->otyp == ELVEN_DAGGER || (otmp)->otyp == ELVEN_SHORT_SWORD \
      || (otmp)->otyp == ELVEN_BROADSWORD || (otmp)->otyp == ELVEN_BOW)
 #define is_elven_obj(otmp) (is_elven_armor(otmp) || is_elven_weapon(otmp))
 
-/* Orcish gear */
+/** Orcish gear */
 #define is_orcish_obj(otmp)                                           \
     (is_orcish_armor(otmp) || (otmp)->otyp == ORCISH_ARROW            \
      || (otmp)->otyp == ORCISH_SPEAR || (otmp)->otyp == ORCISH_DAGGER \
      || (otmp)->otyp == ORCISH_SHORT_SWORD || (otmp)->otyp == ORCISH_BOW)
 
-/* Dwarvish gear */
+/** Dwarvish gear */
 #define is_dwarvish_obj(otmp)                                  \
     (is_dwarvish_armor(otmp) || (otmp)->otyp == DWARVISH_SPEAR \
      || (otmp)->otyp == DWARVISH_SHORT_SWORD                   \
      || (otmp)->otyp == DWARVISH_MATTOCK)
 
-/* Gnomish gear */
+/** Gnomish gear */
 #define is_gnomish_obj(otmp) (is_gnomish_armor(otmp))
 
 /* Light sources */
 #define Is_candle(otmp) \
     (otmp->otyp == TALLOW_CANDLE || otmp->otyp == WAX_CANDLE)
-#define MAX_OIL_IN_FLASK 400 /* maximum amount of oil in a potion of oil */
+#define MAX_OIL_IN_FLASK 400 /**< maximum amount of oil in a potion of oil */
 
 /* MAGIC_LAMP intentionally excluded below */
 /* age field of this is relative age rather than absolute */
@@ -350,16 +350,16 @@ struct obj {
 
 /* erosion flags for erode_obj() */
 #define EF_NONE 0
-#define EF_GREASE 0x1  /* check for a greased object */
-#define EF_DESTROY 0x2 /* potentially destroy the object */
-#define EF_VERBOSE 0x4 /* print extra messages */
-#define EF_PAY 0x8     /* it's the player's fault */
+#define EF_GREASE 0x1  /**< check for a greased object */
+#define EF_DESTROY 0x2 /**< potentially destroy the object */
+#define EF_VERBOSE 0x4 /**< print extra messages */
+#define EF_PAY 0x8     /**< it's the player's fault */
 
 /* erosion return values for erode_obj(), water_damage() */
-#define ER_NOTHING 0   /* nothing happened */
-#define ER_GREASED 1   /* protected by grease */
-#define ER_DAMAGED 2   /* object was damaged in some way */
-#define ER_DESTROYED 3 /* object was destroyed */
+#define ER_NOTHING 0   /**< nothing happened */
+#define ER_GREASED 1   /**< protected by grease */
+#define ER_DAMAGED 2   /**< object was damaged in some way */
+#define ER_DESTROYED 3 /**< object was destroyed */
 
 /*
  *  Notes for adding new oextra structures:

@@ -251,7 +251,7 @@ enum opcode_defs {
 #define SP_MAPCHAR_PACK(typ, lit) (((lit) << 8) + ((char) (typ)))
 
 struct opvar {
-    xchar spovartyp; /* one of SPOVAR_foo */
+    xchar spovartyp; /**< one of SPOVAR_foo */
     union {
         char *str;
         long l;
@@ -261,7 +261,7 @@ struct opvar {
 struct splev_var {
     struct splev_var *next;
     char *name;
-    xchar svtyp; /* SPOVAR_foo */
+    xchar svtyp; /**< SPOVAR_foo */
     union {
         struct opvar *value;
         struct opvar **arrayvalues;
@@ -295,8 +295,8 @@ struct sp_coder {
     int lvl_is_joined;
     boolean check_inaccessibles;
 
-    int opcode;          /* current opcode */
-    struct opvar *opdat; /* current push data (req. opcode == SPO_PUSH) */
+    int opcode;          /**< current opcode */
+    struct opvar *opdat; /**< current push data (req. opcode == SPO_PUSH) */
 };
 
 /* special level coder CPU flags */
@@ -398,7 +398,7 @@ typedef struct {
     xchar fromter, toter, tolit;
 } replaceterrain;
 
-/* values for rtype are defined in dungeon.h */
+/** values for rtype are defined in dungeon.h */
 typedef struct {
     struct {
         xchar x1, y1, x2, y2;
@@ -450,7 +450,7 @@ typedef struct {
     char typ;
 } spill;
 
-/* only used by lev_comp */
+/** only used by lev_comp */
 struct lc_funcdefs_parm {
     char *name;
     char parmtype;
@@ -470,7 +470,7 @@ struct lc_funcdefs {
 struct lc_vardefs {
     struct lc_vardefs *next;
     char *name;
-    long var_type; /* SPOVAR_foo */
+    long var_type; /**< SPOVAR_foo */
     long n_used;
 };
 
