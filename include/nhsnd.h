@@ -14,12 +14,19 @@ struct sound_procs {
     /* A speed of 0 means no modification of speed*/
     boolean (*snd_play_sound)(const char* /* path */, int /*volume*/, int /*speed*/);
     boolean (*snd_play_instrument)(struct obj */*instrument*/, const char */*melody*/);
-
+	void (*snd_change_volume)(int /*volTo*/);
 }
 
 extern struct sound_procs soundprocs;
 
 /* changes playback speed to change pitch and, thus, note */
 E boolean genl_snd_play_instrument(struct obj *instrument, const char *melody);
+/* default implementation; does nothing */
+E void genl_snd_change_volume(int volTo);
+
+E int nh_note_to_speed(char note);
+
+#define play_usersound(__path, __vol) soundprocs->snd_play_sound(__path, __vol, 0)
+E void nh_speaker(struct obj */*instrument*/, const char */*melody*/);
 
 #endif 
